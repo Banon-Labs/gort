@@ -96,3 +96,25 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - Atlassian and GitHub both distinguish hierarchy used to break down larger work from dependency links used to express blocked-by / blocking execution order.
 - Atlassian documents explicit approval gates as workflow concepts, which supports keeping a long-lived acceptance parent open until stakeholder approval rather than overloading executable child tasks with that closure rule.
 - The local Beads stall showed the practical failure mode these docs warn against in effect: open work remained, but hierarchy and dependency roles were conflated enough that `bd ready` returned no executable work.
+
+## 2026-04-01 — state-agnostic reinjection and external runtime recovery
+
+### Local evidence
+
+- The prior compaction payload in [`./context-compaction.md`](./context-compaction.md) embedded `STATE`, `EPIC`, and `LOOP` directly into the reinjected prompt text.
+- A live tmux pane replay (`%0`) showed that over-specific reinjection text caused the fresh session to inherit prompt-coupled transient state instead of recovering it autonomously from external sources.
+- Updated prompt files: [`./gort.md`](./gort.md) and [`./context-compaction.md`](./context-compaction.md)
+
+### Primary supporting sources
+
+- [LangGraph — Persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
+- [LangGraph — Interrupts](https://docs.langchain.com/oss/python/langgraph/interrupts)
+- [Temporal — Workflow Execution](https://docs.temporal.io/workflow-execution)
+- [Temporal — Event History](https://docs.temporal.io/workflow-execution/event)
+
+### Why these sources support the repair
+
+- LangGraph persistence/checkpointing uses a stable external pointer (`thread_id`) and saved checkpoints to resume execution, which supports keeping reinjected prompts minimal and recovering transient state from external runtime storage instead of from the prompt body.
+- LangGraph interrupts explicitly resume by re-invoking against the persisted thread state, not by restating the full execution state in the next prompt.
+- Temporal durable execution and event history show the same architectural pattern at workflow-system level: execution resumes from persisted history/replay, while prompt-like metadata is not the authoritative execution state.
+- Together these sources support a Gort design where the prompt is only the entrypoint to the instructions, while pane-local runtime state and Beads data remain the authority for recovery.

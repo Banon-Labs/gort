@@ -24,7 +24,7 @@ If a compaction check becomes due at a forbidden point, defer it to the next saf
 
 ## Run-local compaction files
 
-To avoid collisions between multiple Gort runs, keep runtime files in the current project root rather than `~`.
+To avoid collisions between multiple Gort runs while still surviving `/new` within the same tmux pane, keep runtime files in the current project root rather than `~`, and key the durable runtime state by pane identity rather than process id.
 
 Resolve the root like this:
 
@@ -33,20 +33,21 @@ GORT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 mkdir -p "$GORT_ROOT/.gort"
 ```
 
-Then define run-local paths with a pane/process-specific suffix:
+Then define pane-local paths:
 
 ```bash
-GORT_RUN_ID="${TMUX_PANE##*.}.$$"
-GORT_RESUME="$GORT_ROOT/.gort/resume.${GORT_RUN_ID}"
-GORT_PROMPT="$GORT_ROOT/.gort/prompt.${GORT_RUN_ID}.md"
-GORT_PAYLOAD="$GORT_ROOT/.gort/payload.${GORT_RUN_ID}.md"
-GORT_REINJECT="$GORT_ROOT/.gort/reinject.${GORT_RUN_ID}.sh"
+GORT_PANE_KEY="${TMUX_PANE##*.}"
+GORT_STATE="$GORT_ROOT/.gort/state.pane-${GORT_PANE_KEY}.env"
+GORT_PROMPT="$GORT_ROOT/.gort/prompt.pane-${GORT_PANE_KEY}.md"
+GORT_PAYLOAD="$GORT_ROOT/.gort/payload.pane-${GORT_PANE_KEY}.md"
+GORT_REINJECT="$GORT_ROOT/.gort/reinject.pane-${GORT_PANE_KEY}.sh"
 ```
 
 This provides:
 
 - per-project isolation
-- per-pane/process isolation within the same project
+- stable resume state across `/new` within the same pane
+- per-pane isolation between concurrent Gort runs
 
 ## Per-loop context check
 
@@ -103,24 +104,27 @@ This follows tmux `send-keys` best practice: always target the exact pane, send 
 
 The payload sent after `/new` is the exact text that must appear in the fresh Pi session and then be submitted with `Enter`. The payload is not optional, and `/new` does not replace it.
 
-First initialize the run-local file paths:
+First initialize the pane-local file paths:
 
 ```bash
 GORT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 mkdir -p "$GORT_ROOT/.gort"
-GORT_RUN_ID="${TMUX_PANE##*.}.$$"
-GORT_RESUME="$GORT_ROOT/.gort/resume.${GORT_RUN_ID}"
-GORT_PROMPT="$GORT_ROOT/.gort/prompt.${GORT_RUN_ID}.md"
-GORT_PAYLOAD="$GORT_ROOT/.gort/payload.${GORT_RUN_ID}.md"
-GORT_REINJECT="$GORT_ROOT/.gort/reinject.${GORT_RUN_ID}.sh"
+GORT_PANE_KEY="${TMUX_PANE##*.}"
+GORT_STATE="$GORT_ROOT/.gort/state.pane-${GORT_PANE_KEY}.env"
+GORT_PROMPT="$GORT_ROOT/.gort/prompt.pane-${GORT_PANE_KEY}.md"
+GORT_PAYLOAD="$GORT_ROOT/.gort/payload.pane-${GORT_PANE_KEY}.md"
+GORT_REINJECT="$GORT_ROOT/.gort/reinject.pane-${GORT_PANE_KEY}.sh"
 ```
 
-Then write the resume file:
+Then write the pane-local runtime state:
 
 ```bash
-cat > "$GORT_RESUME" <<RESUME
-STATE: $CURRENT_STATE | EPIC: $CURRENT_EPIC | LOOP: $CURRENT_LOOP
-RESUME
+cat > "$GORT_STATE" <<STATE
+CURRENT_STATE=${CURRENT_STATE}
+CURRENT_EPIC=${CURRENT_EPIC}
+CURRENT_LOOP=${CURRENT_LOOP}
+STATE_WRITTEN_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+STATE
 ```
 
 If the prompt is not already persisted, persist it:
@@ -129,13 +133,10 @@ If the prompt is not already persisted, persist it:
 cp -f "/path/to/gort-state-machine.md" "$GORT_PROMPT"
 ```
 
-Write the Pi input payload:
+Write the Pi input payload. Keep it stable and state-agnostic; runtime state must be recovered from external files, not embedded into the prompt text:
 
 ```bash
-{
-  printf 'read %s and follow the instructions\n\n' "$GORT_PROMPT"
-  printf 'Resuming from: %s\n' "$(cat "$GORT_RESUME")"
-} > "$GORT_PAYLOAD"
+printf 'read %s and follow the instructions\n' "$GORT_PROMPT" > "$GORT_PAYLOAD"
 ```
 
 Write the re-inject script:
@@ -166,10 +167,11 @@ If the pane is no longer showing Pi, stop and recover manually; never inject `/n
 
 ## Resume behavior
 
-When Gort receives a re-injected prompt with a `Resuming from:` line:
+When Gort starts after compaction or any fresh session:
 
-1. Parse `STATE`, `EPIC`, and `LOOP`.
-2. Restore them exactly; do not reset LOOP.
-3. Re-enter the restored state at the top of its execution cycle.
+1. Resolve `GORT_ROOT` and the pane-local file paths using the current `TMUX_PANE`.
+2. If `GORT_STATE` exists, read `CURRENT_STATE`, `CURRENT_EPIC`, and `CURRENT_LOOP` from that external file instead of from prompt text.
+3. Restore the last known machine position from that file when it is present and valid.
 4. Treat compaction as occurring immediately after a completed safe boundary.
 5. Do not re-run steps already completed in the interrupted loop.
+6. If the pane-local runtime state is missing, stale, or invalid, recover from `bd` state and the normal Gort rules instead of inventing state from the prompt.

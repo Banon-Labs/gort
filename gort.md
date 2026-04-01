@@ -67,6 +67,14 @@ Additional rules:
 - Never claim a task whose ID prefix does not match the current epic
 - Never use `bd edit`
 
+### External runtime state
+
+- Reinjected prompts must be stable and state-agnostic. Do **not** embed `STATE`, `EPIC`, `LOOP`, task IDs, or Beads-derived execution state in the reinjected prompt text.
+- Use prompt text only to locate and load the Gort instructions. Recover transient execution state from external sources described by those instructions.
+- On session start or after compaction, check for pane-local runtime state under `$GORT_ROOT/.gort/` using the current tmux pane identity and restore the last known machine position from there when available.
+- Treat `bd` state and the current issue tree as the authority for current work structure. Treat the pane-local runtime state file as the authority for the last known controller position.
+- If external runtime state is missing, stale, or invalid, recover from `bd ready --json --limit 100` and continue under the normal state-transition rules.
+
 ### Decomposition checkpoints
 
 - At the beginning of each loop, check whether the current epic should be broken into smaller tickets or intermediate tasks before selecting work.
