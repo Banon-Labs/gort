@@ -73,3 +73,26 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - [ApX — Implementing Plan-and-Execute Agents](https://apxml.com/courses/getting-started-with-llm-toolkit/chapter-8-developing-autonomous-agents/plan-and-execute-agents)
 - [Decompose, Analyze and Rethink: Solving Intricate Problems with Human-like Reasoning Cycle](https://www.proceedings.com/content/079/079017-0012open.pdf)
 - [GPT-4 Task Decomposition / HTN Planner repo](https://github.com/marawan1805/GPT-4-Task-Decomposition)
+
+## 2026-04-01 — acceptance-parent and dependency-hygiene repair
+
+### Local evidence
+
+- Current stuck Beads shape reproduced from `/home/choza/projects/radiance-neoforge-minecraft` using `bd ready --json --limit 100`, `bd list --status open --json`, `bd blocked --json`, `bd dep cycles --json`, `bd dep tree oe-3pzz --json`, and `bd show` on `oe-3pzz`, `oe-xa4z`, and `oe-3pzz.4`
+- Local prompt files updated: [`./gort.md`](./gort.md) and [`./states/berada.md`](./states/berada.md)
+- Research-backed wording review performed against official tracker documentation before editing
+
+### Primary supporting sources
+
+- [Atlassian — Epics, Stories, and Initiatives](https://www.atlassian.com/agile/project-management/epics-stories-themes)
+- [Atlassian Support — Configure the work type hierarchy](https://support.atlassian.com/jira-cloud-administration/docs/configure-the-issue-type-hierarchy/)
+- [Atlassian Support — Link work items](https://support.atlassian.com/jira-software-cloud/docs/link-issues/)
+- [Atlassian Support — Add an approval step to a workflow](https://support.atlassian.com/jira-service-management-cloud/docs/add-an-approval-to-a-workflow/)
+- [GitHub Docs — Adding sub-issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues)
+- [GitHub Docs — Creating issue dependencies](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-issue-dependencies)
+
+### Why these sources support the repair
+
+- Atlassian and GitHub both distinguish hierarchy used to break down larger work from dependency links used to express blocked-by / blocking execution order.
+- Atlassian documents explicit approval gates as workflow concepts, which supports keeping a long-lived acceptance parent open until stakeholder approval rather than overloading executable child tasks with that closure rule.
+- The local Beads stall showed the practical failure mode these docs warn against in effect: open work remained, but hierarchy and dependency roles were conflated enough that `bd ready` returned no executable work.

@@ -74,6 +74,14 @@ Additional rules:
 - If decomposition would reduce risk, ambiguity, or task size more than it would add fragmentation, prioritize creating the split work first.
 - Do not emit progress reports between loops.
 
+### Acceptance parents and dependency hygiene
+
+- When completion requires explicit user or stakeholder satisfaction with captures, artifacts, or other validation evidence, maintain a long-lived acceptance parent for that outcome.
+- Keep the acceptance parent open until explicit approval of the required evidence. Child tasks may close independently when their narrower acceptance criteria are met.
+- Use parent-child relations for decomposition only. Use `blocks` / `blocked by` relations for execution sequencing only.
+- Do not let one issue simultaneously serve as the long-lived acceptance gate, the executable leaf, and the active blocker target when that shape eliminates ready work.
+- If open work remains for the current epic but `bd ready --json --limit 100` returns no executable task, BERADA must inspect for hierarchy/dependency conflation, missing execution leaves, or dependency cycles and repair the task tree before considering `NIKTO`.
+
 ## Durable progress rule
 
 **Progress** means any durable change that reduces remaining work or uncertainty for the current epic.
