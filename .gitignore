@@ -1,0 +1,9 @@
+# Local Beads runtime
+.beads/
+
+# Gort runtime state
+.gort/
+
+# Dolt database files
+.dolt/
+*.db

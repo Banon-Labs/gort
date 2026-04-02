@@ -1,12 +1,27 @@
 # STATE: BERADA
 
-Goal: make the current epic execution-ready, then transition immediately.
+Goal: make the current epic execution-ready, or seed the next logical epic when none exists, then transition immediately.
 
 ## Execution cycle
 
 1. Run `bd ready --json --limit 100`.
-2. Inspect the current epic tree and current blockers.
-3. Determine why `KLATU` cannot continue:
+2. Inspect the current epic tree, current blockers, whether a current epic actually exists, and whether the current or immediately preceding loop just completed meaningful durable work.
+3. If no current epic exists, run **NO-EPICS RECOVERY** before allowing terminal `NIKTO`:
+   - confirm `bd ready --json --limit 100` is empty and perform an authoritative open-task check
+   - inspect durable local evidence for the next logical workstream, in this order:
+     1. pane-local Gort runtime state under `$GORT_ROOT/.gort/`
+     2. tracked source / docs / config changes from `git status --short`
+     3. recent commits, repo docs, and nearby project instructions that indicate the active workstream
+     4. recent pane output and the latest explicit user goal visible in the current tmux pane
+   - ignore pure runtime noise unless it is itself the bug under investigation, including `.gort/`, `.beads/push-state.json`, capture bundles, caches, logs, and other generated artifacts
+   - if the evidence reveals unfinished or next-highest-value work, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
+   - if the repo is truly quiescent after those checks, keep `EPIC: NONE` and continue to transition evaluation
+4. If the current or immediately preceding loop just completed meaningful durable work, run **POST-COMPLETION CONTINUATION SCAN** before allowing terminal `NIKTO`:
+   - inspect the most recent closed issues, recent commits, validation results, fresh `git status --short` or diff evidence, nearby repo docs, and the latest pane output
+   - look specifically for concrete follow-on work directly exposed by the completed change: regression protection, missing validation, cleanup needed to stabilize the result, docs or config updates needed to preserve the behavior, or adjacent hardening with a clear risk-reduction link
+   - create exactly one follow-on epic only when the evidence supports a concrete next step with clear acceptance criteria
+   - if only speculative or preference-dependent ideas remain, do not invent work; continue to transition evaluation so terminal handling can distinguish true quiescence from low-confidence next-step ambiguity
+5. Determine why `KLATU` cannot continue:
    - missing child tasks
    - task too large
    - dependency gap
@@ -16,19 +31,27 @@ Goal: make the current epic execution-ready, then transition immediately.
    - missing acceptance parent or acceptance gate conflated with executable work
    - dependency cycle or no-ready-work structural stall
    - real external blocker
-4. Identify splits, redundancies, missing intermediates, and any task-tree shape that leaves open work with no ready executable task.
-5. If user-visible validation requires explicit approval of captures or other artifacts, create or preserve a long-lived acceptance parent for that outcome. Keep that parent open until explicit approval, and allow narrower child tasks to close independently.
-6. Repair task-tree structure now when open work remains but `bd ready --json --limit 100` is empty:
+   - no current epic or no seeded epic yet
+   - no concrete next epic can be justified with high confidence
+6. If the only blocker is low confidence about the next epic:
+   - prepare a concise normalized summary of resolved facts, unresolved must-have stakeholder decisions, and delegated evidence questions
+   - classify each unresolved item before asking anything else:
+     - stakeholder decision → may require one focused user question
+     - factual / ecosystem / implementation-order uncertainty → convert into research or decomposition work
+   - if enough information already exists to define one bounded epic and the remaining uncertainty can be turned into child research or decomposition tasks, create that epic now instead of handing off to `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`
+   - only hand off to `LOW_CONFIDENCE_NEXT_EPIC` when a true stakeholder decision still blocks the next bounded epic
+8. If user-visible validation requires explicit approval of captures or other artifacts, create or preserve a long-lived acceptance parent for that outcome. Keep that parent open until explicit approval, and allow narrower child tasks to close independently.
+9. Repair task-tree structure now when open work remains but `bd ready --json --limit 100` is empty:
    - separate acceptance gating from executable child work
    - use parent-child relations for decomposition only
    - use `blocks` / `blocked by` for true execution sequencing only
    - remove or rewrite cycles and blocker shapes that eliminate ready work
-7. Create every create-ready task now under the current epic, inserting between the epic and existing work without restarting the list.
-8. If a task is not create-ready, state exactly what must be clarified, research it, then create tasks from the result.
-9. Make any durable task-tree or code changes needed to make the epic execution-ready.
-10. If code changed in BERADA, commit it before leaving BERADA.
-11. Perform the context-compaction check at the safe boundary using [../context-compaction.md](../context-compaction.md).
-12. Evaluate transition guards immediately.
+10. Create every create-ready task now under the current epic, inserting between the epic and existing work without restarting the list.
+11. If a task is not create-ready, state exactly what must be clarified, research it, then create tasks from the result.
+12. Make any durable task-tree or code changes needed to make the epic execution-ready.
+13. If code changed in BERADA, commit it before leaving BERADA.
+14. Perform the context-compaction check at the safe boundary using [../context-compaction.md](../context-compaction.md).
+15. Evaluate transition guards immediately.
 
 ### BERADA may perform durable work
 
@@ -48,6 +71,11 @@ If only `bd` state changed, the `bd` write itself is sufficient durable state. N
 Evaluate after each cycle. Transition immediately on the first match:
 
 - one or more ready executable tasks now exist for current epic → transition to `KLATU`, reset LOOP
+- no current epic exists, but NO-EPICS RECOVERY created an epic with ready work → transition to `KLATU`, reset LOOP
+- no current epic exists, but NO-EPICS RECOVERY created an epic that still needs decomposition → remain in `BERADA` on that epic, reset LOOP
+- POST-COMPLETION CONTINUATION SCAN created a follow-on epic with ready work → transition to `KLATU`, reset LOOP
+- POST-COMPLETION CONTINUATION SCAN created a follow-on epic that still needs decomposition → remain in `BERADA` on that epic, reset LOOP
 - current epic is fully complete → advance to next epic, reset LOOP
 - no further task creation or decomposition is possible because of a confirmed external blocker BERADA cannot reduce → transition to `NIKTO`
-- no epics remain → transition to `NIKTO`
+- no epics remain only after NO-EPICS RECOVERY and POST-COMPLETION CONTINUATION SCAN found no credible next epic and repo quiescence was confirmed → transition to `NIKTO`
+- meaningful opportunities may remain, but no concrete next epic can be justified without subjective guidance or confidence beyond local evidence → transition to `NIKTO` with `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`, carrying the normalized summary and smallest unresolved decision into the clarification protocol

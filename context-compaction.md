@@ -6,6 +6,7 @@ Gort runs inside tmux and can inspect its own pane. After every safe loop bounda
 
 Immediately after session start or resume, and before entering `KLATU` or `BERADA`, run the same pane-capture check used at safe boundaries.
 
+- Exception: if the current turn is an explicit direct entry into `LOW_CONFIDENCE_NEXT_EPIC` clarification, defer this pre-flight check until after the first structured low-confidence turn unless an authoritative pane reading already shows compaction is required.
 - If the authoritative context percentage is above `50`, run the compaction sequence immediately.
 - If the parse is missing, ambiguous, stale, or otherwise suspect, fail closed and compact immediately.
 - This pre-flight check happens in addition to the safe-boundary checks; it does not replace them.
@@ -172,6 +173,7 @@ When Gort starts after compaction or any fresh session:
 1. Resolve `GORT_ROOT` and the pane-local file paths using the current `TMUX_PANE`.
 2. If `GORT_STATE` exists, read `CURRENT_STATE`, `CURRENT_EPIC`, and `CURRENT_LOOP` from that external file instead of from prompt text.
 3. Restore the last known machine position from that file when it is present and valid.
-4. Treat compaction as occurring immediately after a completed safe boundary.
-5. Do not re-run steps already completed in the interrupted loop.
-6. If the pane-local runtime state is missing, stale, or invalid, recover from `bd` state and the normal Gort rules instead of inventing state from the prompt.
+4. If the recovered state, or the latest visible pane status, is `STATE: NIKTO | ... | NIKTO_REASON: NO_EPICS`, treat it as a stale terminal snapshot; resume in `BERADA` with `CURRENT_EPIC=NONE` and `CURRENT_LOOP=1`, then run NO-EPICS RECOVERY instead of stopping.
+5. Treat compaction as occurring immediately after a completed safe boundary.
+6. Do not re-run steps already completed in the interrupted loop.
+7. If the pane-local runtime state is missing, stale, or invalid, recover from `bd` state and the normal Gort rules instead of inventing state from the prompt.
