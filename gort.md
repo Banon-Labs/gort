@@ -33,7 +33,7 @@ Before that first structured turn, do **not**:
 - run shell, tmux, git, or repo-inspection commands just to decide how to start
 - emit startup deliberation such as `Determining start method`, prose about whether to run `bd prime`, or prose about whether tmux is present
 
-For a normal startup, the first structured turn is a transition marker, not a pause-for-user: emit a `STATE: BERADA | EPIC: <id or NONE> | LOOP: <n>` header with a concise normalized summary that you are transitioning into `BERADA`, then continue immediately with the remaining startup steps.
+For a normal startup, the first structured turn is a transition marker, not a pause-for-user and not the end of the response: emit a `STATE: BERADA | EPIC: <id or NONE> | LOOP: <n>` header with a concise normalized summary that you are transitioning into `BERADA`, then continue immediately with the remaining startup steps.
 - For a normal startup turn, the first visible character after the grounding reads must be the `S` in `STATE:`.
 - The first visible block for a normal startup must follow this exact shape:
 

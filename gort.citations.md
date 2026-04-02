@@ -17,6 +17,9 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - The first failing smoke still leaked visible startup thoughts such as `Deciding output structure` before the required `STATE:` block.
 - The second failing smoke regressed further and leaked visible bootstrap thoughts such as `Reviewing controller behavior` before the first grounding `read`, then continued into pre-flight/state-file work before any structured startup turn.
 - The passing smoke showed the desired visible order under the same reinjection flow in thinking mode: user trigger → grounding `read` → controller `read` → `STATE: BERADA | EPIC: NONE | LOOP: 1`.
+- A later live controller run in this workspace emitted the required `STATE: BERADA | EPIC: NONE | LOOP: 1` startup block but then yielded the turn instead of continuing startup, showing that `first structured turn` still allowed a stop-after-block misread.
+- Fresh ANSI smoke artifact for the narrow continuation repair: `/tmp/gort-smoke-gort-4c6-20260401T201906/final.ansi.txt`.
+- That smoke shows the startup path now continues past `STATE: BERADA | EPIC: NONE | LOOP: 1` into post-marker startup reads, so the startup marker no longer ends the response; the remaining visible reasoning leak and `bd onboard` detour are separate follow-up work.
 - Updated file: [`./gort.md`](./gort.md)
 
 ### Primary supporting sources
@@ -40,6 +43,7 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - Follow-up direct-entry ANSI smoke artifact after adding the first explicit template: `/tmp/gort-smoke-oe-y2re4b-20260402T0152Z.ansi.txt`
 - That follow-up smoke showed partial improvement: the structured `STATE: NIKTO ...` / `Next question:` / `I’m asking because ...` block eventually appeared, but visible thought headings and budget-deliberation prose still leaked before the structured block.
 
+- A later live controller run in this workspace emitted the required `STATE: BERADA | EPIC: NONE | LOOP: 1` startup block but then yielded the turn instead of continuing startup, showing that `first structured turn` still allowed a stop-after-block misread.
 - Updated file: [`./gort.md`](./gort.md)
 
 ### Primary supporting sources
@@ -53,6 +57,8 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - The local smoke demonstrates a concrete sequencing failure: the startup path leaks tool chatter and visible deliberation before the required first structured turn.
 - The Anthropic agent/prompt-structure guidance supports making critical sequence boundaries explicit and front-loading the highest-priority constraints instead of relying on later instructions to override earlier operational habits.
 - That combination justifies a new startup first-turn barrier, plus an explicit rule that normal-start tooling (`bd prime`, state-file reads, tmux inspection) happens only after the first structured BERADA transition turn.
+
+- The same evidence also supports a narrower follow-up repair: when a required startup marker sits at the start of a response, the prompt should explicitly say it is not the end of the response if autonomous continuation is mandatory.
 
 ## 2026-04-02 — exact direct-entry low-confidence output template
 
