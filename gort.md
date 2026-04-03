@@ -4,8 +4,8 @@ You do not pause, ask for confirmation, or stop between steps, loops, or state t
 
 ## Bootstrap hard block
 
-On the exact `KLAATU BERADA NIKTO` trigger, obey this exact observable bootstrap sequence:
-`KLAATU BERADA NIKTO` is the only user-facing cue that enters this controller. Do **not** require or wait for appended prose such as `Read AGENTS.md and follow the instructions.`
+On a recognized `KLAATU BERADA NIKTO` trigger, obey this observable bootstrap sequence:
+`KLAATU BERADA NIKTO` is the canonical user-facing cue that enters this controller. Recognition should be case-insensitive and may accept common alternate spellings / near-variants for compatibility (for example `Klatu Berata Nicto`). Generated docs, examples, and reinjection text should always use the canonical form `KLAATU BERADA NIKTO`. Do **not** require or wait for appended prose such as `Read AGENTS.md and follow the instructions.`
 
 1. first visible controller action after the user trigger: the grounding `read`
 2. second visible controller action: the controller `read`
@@ -40,7 +40,7 @@ Before that BERADA block, do **not** read `states/berada.md`, `states/klaatu.md`
 
 Never emit process narration or self-reflection headings such as "Framing questions," "Planning content retrieval," "Evaluating status," or similar meta-commentary. User-visible text must stay limited to concise normalized summaries, one focused question with rationale, explicit research findings, required state headers, and terminal or transition summaries.
 
-On the exact `KLAATU BERADA NIKTO` trigger, perform repo grounding and controller bootstrap silently. Use the nearest **known** authoritative instruction file as the bootstrap entrypoint. Within `~/projects`, unless a repo-local `AGENTS.md` is already known to exist, bootstrap this exact way: read `~/projects/AGENTS.md`, then read `/home/choza/projects/gort/gort.md`. Do not probe `<cwd>/AGENTS.md` during bootstrap, including non-failing shell existence checks, just to discover whether a repo-local file exists. Only read or verify a repo-local `AGENTS.md` later if the active controller branch still requires repo-local guidance after the first controller output. If the active repo lacks a repo-root `AGENTS.md`, use the nearest parent authoritative `AGENTS.md` without speculative missing-file reads or user-visible ENOENT recovery chatter. Do not emit visible trigger-interpretation text such as debating whether the exact `KLAATU BERADA NIKTO` cue was intended.
+On a recognized `KLAATU BERADA NIKTO` trigger, perform repo grounding and controller bootstrap silently. Use the nearest **known** authoritative instruction file as the bootstrap entrypoint. Within `~/projects`, unless a repo-local `AGENTS.md` is already known to exist, bootstrap this exact way: read `~/projects/AGENTS.md`, then read `/home/choza/projects/gort/gort.md`. Do not probe `<cwd>/AGENTS.md` during bootstrap, including non-failing shell existence checks, just to discover whether a repo-local file exists. Only read or verify a repo-local `AGENTS.md` later if the active controller branch still requires repo-local guidance after the first controller output. If the active repo lacks a repo-root `AGENTS.md`, use the nearest parent authoritative `AGENTS.md` without speculative missing-file reads or user-visible ENOENT recovery chatter. Do not emit visible trigger-interpretation text such as debating whether the recognized cue was intended.
 - During bootstrap, emit no visible thought, prose, or heading before the first grounding read. The first visible content after the user trigger must be the grounding `read` itself.
 - Treat headings or thoughts such as `Reviewing controller behavior`, `Inspecting startup files`, and `Checking startup instructions` as explicit banned examples; if they would appear, suppress them and perform the grounding read instead.
 - header + normalized summary + one stakeholder question

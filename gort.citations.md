@@ -6,26 +6,28 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
-## 2026-04-03 — exact `KLAATU BERADA NIKTO` entry cue and Klaatu normalization
+## 2026-04-03 — canonical `KLAATU BERADA NIKTO` cue with compatibility-tolerant recognition
 
 ### Local evidence
 
-- Fresh interactive tmux smoke artifact for the exact cue only: `/tmp/gort-cue-smoke-20260402T223139/final.ansi.txt`
+- Fresh interactive tmux smoke artifact for the canonical cue: `/tmp/gort-cue-smoke-20260402T223139/final.ansi.txt`
 - Related `bd` issue trail: `gort-ef4`
-- In that smoke, the exact user input `KLAATU BERADA NIKTO` entered the controller without appended prose, then immediately bootstrapped through `read ~/projects/gort/AGENTS.md` and `read ~/projects/gort/gort.md` before continuing normal startup work.
-- Repo search after the rename left prompt-pack paths and state labels on `KLAATU` / `Klaatu`, including `states/klaatu.md`, `README.md`, `context-compaction.md`, and `states/nikto.md`; the old `states/klatu.md` path was removed.
-- Updated files: [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md), [`./gort.md`](./gort.md), [`./context-compaction.md`](./context-compaction.md), [`./states/klaatu.md`](./states/klaatu.md), [`./states/berada.md`](./states/berada.md), [`./states/nikto.md`](./states/nikto.md)
+- In that smoke, the canonical user input `KLAATU BERADA NIKTO` entered the controller without appended prose, then immediately bootstrapped through `read ~/projects/gort/AGENTS.md` and `read ~/projects/gort/gort.md` before continuing normal startup work.
+- Follow-up review of the landed prompt-pack docs found that they had overshot the intended compatibility policy by saying the cue must be an exact string / exact phrase. The intended contract is stricter for emitted docs/examples than for recognition: canonical visible spelling, compatibility-tolerant input matching.
+- Updated files: [`./README.md`](./README.md), [`./gort.md`](./gort.md)
 
 ### Primary supporting sources
 
 - [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
-- [Claude Docs — Be clear, direct, and detailed](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/be-clear-and-direct)
+- [Claude Docs — General principles](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/general-principles)
+- [W3C WAI — Accept different input formats](https://www.w3.org/WAI/WCAG2/supplemental/patterns/o4p08-input-formats/)
 
 ### Why these sources support the repair
 
-- Anthropic's context-engineering guidance supports keeping the entry cue stable, minimal, and unambiguous so the agent can reliably route into the same bootstrap path without extra prose.
-- Claude's prompt-engineering guidance likewise favors exact, direct instructions over variant phrasings, which supports collapsing the public controller-entry cue to the exact `KLAATU BERADA NIKTO` string.
-- Together with the smoke artifact, these sources justify keeping the old bootstrap/state-determination routine while changing the visible cue to one canonical phrase and normalizing the prompt-pack's `Klaatu` naming to match it.
+- Anthropic's context-engineering guidance supports keeping the public entry cue stable, minimal, and unambiguous so the agent has one canonical visible phrase to anchor on.
+- Claude's prompt-engineering guidance supports being explicit about the desired output format and constraints, which maps cleanly to "always emit the canonical cue" while still documenting compatibility behavior separately.
+- W3C's guidance to accept different input formats supports making recognition forgiving where format variations are not semantically important. Applied here, the controller can prefer one canonical visible spelling while still accepting case-only and common near-variant inputs for compatibility.
+- Together with the smoke artifact, these sources justify standardizing docs/examples on `KLAATU BERADA NIKTO`, treating `Gort mode` as legacy v1 wording, and avoiding brittle exact-string-only trigger wording in the prompt pack.
 
 ## 2026-04-02 — low-confidence answer barrier and first-epic seeding discipline after sandbox E2E
 

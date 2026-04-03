@@ -13,7 +13,7 @@ Gort is a state-machine prompt pack for autonomous project execution.
 
 ## Usage
 
-Use the exact cue `KLAATU BERADA NIKTO` to enter the controller from a consumer repo. Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting.
+Use the canonical cue `KLAATU BERADA NIKTO` to enter the controller from a consumer repo. Recognition is case-insensitive and may accept common alternate spellings for compatibility (for example `Klatu Berata Nicto`), but docs and examples should always use the canonical form. Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting.
 
 ## Editing rule
 
