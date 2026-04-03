@@ -6,6 +6,62 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-03 — exact `KLAATU BERADA NIKTO` entry cue and Klaatu normalization
+
+### Local evidence
+
+- Fresh interactive tmux smoke artifact for the exact cue only: `/tmp/gort-cue-smoke-20260402T223139/final.ansi.txt`
+- Related `bd` issue trail: `gort-ef4`
+- In that smoke, the exact user input `KLAATU BERADA NIKTO` entered the controller without appended prose, then immediately bootstrapped through `read ~/projects/gort/AGENTS.md` and `read ~/projects/gort/gort.md` before continuing normal startup work.
+- Repo search after the rename left prompt-pack paths and state labels on `KLAATU` / `Klaatu`, including `states/klaatu.md`, `README.md`, `context-compaction.md`, and `states/nikto.md`; the old `states/klatu.md` path was removed.
+- Updated files: [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md), [`./gort.md`](./gort.md), [`./context-compaction.md`](./context-compaction.md), [`./states/klaatu.md`](./states/klaatu.md), [`./states/berada.md`](./states/berada.md), [`./states/nikto.md`](./states/nikto.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [Claude Docs — Be clear, direct, and detailed](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/be-clear-and-direct)
+
+### Why these sources support the repair
+
+- Anthropic's context-engineering guidance supports keeping the entry cue stable, minimal, and unambiguous so the agent can reliably route into the same bootstrap path without extra prose.
+- Claude's prompt-engineering guidance likewise favors exact, direct instructions over variant phrasings, which supports collapsing the public controller-entry cue to the exact `KLAATU BERADA NIKTO` string.
+- Together with the smoke artifact, these sources justify keeping the old bootstrap/state-determination routine while changing the visible cue to one canonical phrase and normalizing the prompt-pack's `Klaatu` naming to match it.
+
+## 2026-04-02 — low-confidence answer barrier and first-epic seeding discipline after sandbox E2E
+
+### Local evidence
+
+- Fresh sandbox E2E ANSI artifact: `/tmp/gort-e2e-followup-20260402T034743Z.ansi.txt`
+- Related `bd` evidence and issue trail: `gort-z5a`
+- The sandbox run succeeded end-to-end, but the first stakeholder-question turn still missed the strict low-confidence NIKTO template even when the user explicitly asked Gort to start by asking the single smallest stakeholder question needed to shape the first bounded epic.
+- After the user answered that question, the next visible output still leaked thoughts such as `Structuring the turn`, `Evaluating pre-flight checks`, and `Planning project structure` before the structured `BERADA` transition.
+- In the same run, BERADA seeded the first epic only after generic help churn (`bd --help`, `bd create --help`, `bd update --help`, `bd epic --help`, `bd children --help`) even though the standard create / claim flow was already specified by the controller.
+- Fresh rerun sandbox ANSI artifact after the first repair: `/tmp/gort-e2e-rerun-preanswer.ansi.txt`
+- That rerun still leaked visible thought (`Clarifying instructions`) and still paraphrased the required low-confidence body labels as `Question:` / `Why this one:` instead of `Next question:` / `I’m asking because ...`.
+- Fresh second rerun ANSI artifact after moving the rule higher in the file was needed because the first rerun still leaked before reaching the deeper low-confidence section: `/tmp/gort-e2e-rerun-preanswer-2.ansi.txt`
+- That second rerun showed the root cause more clearly: the model was still operating only on the early truncated excerpt of `gort.md`, so the low-confidence direct-entry template had to be duplicated higher in the bootstrap section rather than living only deeper in the file.
+- Fresh third rerun ANSI artifact after moving the exact low-confidence template into the top bootstrap section: `/tmp/gort-e2e-rerun-preanswer-3.ansi.txt`
+- That third rerun finally emitted the exact `STATE: NIKTO ... | QMODE: CLARIFY | QSTEP: 1/1 | QVALUE: MAYBE | NEXT: ASK` block with the correct `Resolved facts:` / `Next question:` / `I’m asking because ...` labels, but it still leaked visible thought (`Asking clear questions`) immediately before the block.
+- Fresh post-answer rerun ANSI artifact: `/tmp/gort-e2e-rerun-postanswer-3.ansi.txt`
+- The post-answer rerun still read `states/*.md`, `context-compaction.md`, `README.md`, and performed generic repo inspection before the structured BERADA transition, confirming the need for a top-level post-answer barrier in the same early excerpt.
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
+
+### Primary supporting sources
+
+- [Anthropic — Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic prompt engineering tutorial — Building Complex Prompts](https://deepwiki.com/anthropics/prompt-eng-interactive-tutorial/6.2-building-complex-prompts)
+- [Qualaroo — Skip Logic Survey: A Complete Guide](https://qualaroo.com/blog/skip-logic-survey/)
+
+### Why these sources support the repair
+
+- The sandbox artifact shows a narrower control-flow failure than the earlier startup smokes: once Gort is explicitly told to begin with one smallest stakeholder question, the controller still needs an equally explicit post-question barrier so the answer transitions directly into the next structured block instead of leaking thoughts and state-file churn.
+- Anthropic's agent / prompt-structure guidance supports replacing ambiguous continuation behavior with short exact transition templates at high-risk control points.
+- Skip-logic guidance supports moving directly from a resolved stakeholder choice into synthesis rather than re-opening broad discovery or exploratory help lookup.
+- Together these sources justify two focused repairs: broaden the low-confidence direct-entry trigger so "start by asking the smallest stakeholder question" uses the strict template, and tighten BERADA so first-epic seeding in a fresh repo skips generic help churn when the standard `bd` flow is already known.
+
 ## 2026-04-02 — bootstrap hard block for visible startup sequence
 
 ### Local evidence
@@ -39,7 +95,7 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 
 - Fresh ANSI smoke artifact from `/home/choza/projects/scripts`: `/tmp/gort-smoke-oe-y2re1-20260402T0140Z.ansi.txt`
 - Related `bd` evidence and issue trail: `oe-y2re`, `oe-y2re.1`, and `oe-y2re.2`
-- The smoke showed that plain `Gort mode. Read AGENTS.md and follow the instructions.` still triggered extra controller file reads (`context-compaction.md` and `states/*.md`), visible startup deliberation (`Determining start method`), and startup shell/tmux inspection before any structured `STATE:` turn.
+- The smoke showed that plain `KLAATU BERADA NIKTO. Read AGENTS.md and follow the instructions.` still triggered extra controller file reads (`context-compaction.md` and `states/*.md`), visible startup deliberation (`Determining start method`), and startup shell/tmux inspection before any structured `STATE:` turn.
 - Follow-up direct-entry ANSI smoke artifact after adding the first explicit template: `/tmp/gort-smoke-oe-y2re4b-20260402T0152Z.ansi.txt`
 - That follow-up smoke showed partial improvement: the structured `STATE: NIKTO ...` / `Next question:` / `I’m asking because ...` block eventually appeared, but visible thought headings and budget-deliberation prose still leaked before the structured block.
 
@@ -89,7 +145,7 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 ### Local evidence
 
 - [`./gort.md`](./gort.md)
-- [`./states/klatu.md`](./states/klatu.md)
+- [`./states/klaatu.md`](./states/klaatu.md)
 - [`./states/berada.md`](./states/berada.md)
 - [`./states/nikto.md`](./states/nikto.md)
 - [`./context-compaction.md`](./context-compaction.md)
@@ -399,7 +455,7 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - The same concise-interaction guidance used for the questionnaire also applies to controller bootstrap: the user should not have to watch speculative discovery chatter before the useful turn starts.
 - Together with the smoke evidence, these sources justify a bootstrap-specific repair: resolve the authoritative `AGENTS.md` path first, avoid speculative missing-file reads that create `ENOENT` noise, and forbid visible debate about whether the exact `Gort mode` reinjection text was intended.
 
-## 2026-04-01 — deterministic workspace bootstrap for `Gort mode`
+## 2026-04-01 — deterministic workspace bootstrap for the exact `KLAATU BERADA NIKTO` cue
 
 ### Local evidence
 
@@ -580,7 +636,7 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 
 ### Local evidence
 
-- The strongest remaining churn pattern appeared when the pane had already bootstrapped into Gort mode, and then a later user turn explicitly invoked `LOW_CONFIDENCE_NEXT_EPIC`. The model sometimes kept following a pending startup plan (`bd prime`, state/context reads) instead of switching immediately to the structured clarification turn.
+- The strongest remaining churn pattern appeared when the pane had already bootstrapped from the `KLAATU BERADA NIKTO` cue, and then a later user turn explicitly invoked `LOW_CONFIDENCE_NEXT_EPIC`. The model sometimes kept following a pending startup plan (`bd prime`, state/context reads) instead of switching immediately to the structured clarification turn.
 - Updated prompt files: [`/home/choza/projects/AGENTS.md`](/home/choza/projects/AGENTS.md), [`./gort.md`](./gort.md), and [`./states/nikto.md`](./states/nikto.md)
 
 ### Why this supports the repair
@@ -600,3 +656,100 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 
 - Once question quality improved, the next remaining inconsistency was presentation semantics: if the body is visibly asking a stakeholder question, `NEXT` must be `ASK`, and the question label should stay canonical.
 - The smallest repair is to bind those two things explicitly so header and body cannot describe different immediate actions.
+
+## 2026-04-02 — normal-start bootstrap must stay silent until the turn’s real output
+
+### Local evidence
+
+- Live tmux pane `%0` in `/home/choza/projects/radiance-neoforge-minecraft` reproduced the user's stall exactly: after `read AGENTS.md` and `read ~/projects/gort/gort.md`, the controller emitted `STATE: BERADA | EPIC: NONE | LOOP: 1` plus `Normal startup. Transitioning into BERADA and continuing controller bootstrap now.` and then immediately yielded the turn instead of running `bd prime`, state loading, or no-epics recovery.
+- The current repo already carried a prompt hint that the startup marker was "not the end of the response," but the live pane still stopped at that marker, so the remaining bug was not wording softness alone; it was an impossible sequencing contract for a tool-using agent turn.
+- Updated file: [`./gort.md`](./gort.md)
+
+### Primary supporting sources
+
+- [Anthropic Claude API docs — How tool use works](https://console.anthropic.com/docs/en/agents-and-tools/tool-use/how-tool-use-works)
+- [OpenAI API docs — Function calling](https://platform.openai.com/docs/guides/function-calling?api-mode=responses&lang=javascript)
+
+### Why these sources support the repair
+
+- Anthropic's tool-use contract describes a client-tool loop where the model requests tools, the application executes them, and the loop exits on `end_turn` when Claude has produced a final answer. That makes the visible assistant message the end of the active loop iteration, not a midpoint after which more client-executed tools can still run in the same turn.
+- OpenAI's function-calling flow likewise describes tool execution first, then a final response from the model (or another tool-call round). The final user-visible answer is the result of the loop, not a progress marker that safely precedes more tool work in the same turn.
+- Together with the live pane evidence, these sources justify a narrow but important repair: keep direct-entry clarification turns strict and structured, but make normal startup silent after the two grounding reads so Gort can actually run `bd prime`, context checks, state loading, and recovery work before emitting the next complete `STATE:` block.
+
+## 2026-04-02 — silent startup must execute directly instead of self-looking up the prompt
+
+### Local evidence
+
+- A fresh tmux smoke after the first silent-startup repair still failed: the pane opened with no BERADA startup banner, but then grepped `~/projects/gort/gort.md` for `bd prime|normal-start|startup|resume|STATE:|bd ready|epic`, reread `gort.md`, and emitted new visible narration such as `Investigating bd prime execution` and `Checking pre-flight context` before continuing.
+- The same smoke showed that a softer global ban on worklog headings was not enough by itself; the startup path needed an exact "execute, don't re-derive" rule at the point where the model was still self-looking up the controller.
+- Updated file: [`./gort.md`](./gort.md)
+
+### Primary supporting sources
+
+- [Anthropic — Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic — Prompt engineering for Claude's long context window](https://www.anthropic.com/news/prompting-long-context)
+
+### Why these sources support the repair
+
+- The smoke evidence shows a remaining prompt-following failure mode: once startup becomes silent, the model can still waste turns by rereading its own controller instead of executing the already-specified startup actions.
+- Anthropic's guidance supports making high-priority control-flow steps explicit and keeping the active context focused on the task-relevant evidence rather than repeatedly reloading the policy text itself.
+- Together these sources justify a tighter repair: during normal startup, execute the listed startup steps directly, ban prompt self-lookup for those steps, and suppress all user-visible assistant prose until the next complete `STATE:` block is actually ready.
+
+## 2026-04-02 — ordinary repo work may not emit interim prose between tool calls
+
+### Local evidence
+
+- Fresh tmux smoke artifact after the self-lookup repair: `/tmp/gort-no-narration-20260401T214812/final.ansi.txt`
+- That smoke improved one failure mode: the pane no longer grepped or reread `gort.md` to decide whether startup was silent.
+- But it still emitted free-form narration during ordinary repo work, including `Inspecting task status`, before and between shell commands while no structured `STATE:` block was ready.
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
+
+### Primary supporting sources
+
+- [Anthropic — Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic — Prompt engineering for Claude's long context window](https://www.anthropic.com/news/prompting-long-context)
+
+### Why these sources support the repair
+
+- The new smoke shows that banning a few example headings is still too weak when the model is mid-investigation: the stronger invariant has to be that ordinary autonomous work produces no assistant prose at all until a complete `STATE:` block is ready.
+- Anthropic's guidance supports simplifying the active control contract and keeping the model focused on task execution and relevant evidence rather than narrating intermediate work.
+- Together these sources justify a narrower and stronger repair: outside grounding reads and complete `STATE:` blocks, ordinary repo work should stay silent, and BERADA's evidence-gathering path should explicitly ban interim worklog narration.
+
+## 2026-04-02 — ban visible worklog headings and controller self-lookup during ordinary repo work
+
+### Local evidence
+
+- After the silent-startup repair, the same live Radiance pane `%0` continued past the old startup stop point, but it still emitted visible meta headings such as `Inspecting scripts and logs`, `Considering coordinate mapping`, `Analyzing screenshot data`, and `Evaluating the setup process` while it was doing ordinary repo triage.
+- The same pane also grepped `bd prime` in `~/projects/gort` and reread `gort.md` mid-run to decide what to do next, even though the controller had already bootstrapped and the target work evidence lived in the Radiance repo plus pane/runtime state.
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
+
+### Primary supporting sources
+
+- [Anthropic — Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic — Prompt engineering for Claude's long context window](https://www.anthropic.com/news/prompting-long-context)
+
+### Why these sources support the repair
+
+- The live-pane evidence shows a remaining failure mode after startup: the controller is still narrating its own intermediate inspection steps and treating its prompt files as runtime evidence, which adds user-visible churn without improving state recovery.
+- Anthropic's guidance supports keeping the active instruction hierarchy simple and explicit at high-risk control points, and keeping working memory focused on task-relevant context instead of repeatedly re-ingesting the controller itself.
+- Together these sources justify a small follow-up repair: ban visible worklog headings globally and forbid ordinary BERADA/no-epics recovery from using shared Gort prompt files as substitute evidence for the target repo's next workstream.
+
+## 2026-04-02 — normal startup may show tool rows, but not assistant prose, before the next `STATE:` block
+
+### Local evidence
+
+- Fresh tmux smoke artifact after the interim-prose repair: `/tmp/gort-silent-prose-20260401T215020/final.ansi.txt`
+- That smoke still leaked assistant prose during startup and state recovery, including `Evaluating current state` and `Inspecting tmux panes`, even though those messages appeared between tool rows rather than as a terminal banner.
+- The same smoke confirmed that tool rows themselves are acceptable; the remaining bug is specifically assistant prose appearing before the next complete structured `STATE:` block is ready.
+- Updated file: [`./gort.md`](./gort.md)
+
+### Primary supporting sources
+
+- [Anthropic — Building effective agents](https://www.anthropic.com/research/building-effective-agents)
+- [Anthropic — Prompt engineering for Claude's long context window](https://www.anthropic.com/news/prompting-long-context)
+
+### Why these sources support the repair
+
+- The smoke evidence narrows the rule further: after grounding, normal startup sometimes needs visible tool rows for real work, but it should never emit free-form assistant narration until the next complete `STATE:` block is ready.
+- Anthropic's guidance supports making the control contract concrete at the exact failure boundary instead of relying on broad stylistic bans.
+- Together these sources justify an exact sequencing repair: after the two grounding reads on normal startup, only tool actions may appear until the next real `STATE:` block.

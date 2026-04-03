@@ -12,8 +12,14 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
      1. pane-local Gort runtime state under `$GORT_ROOT/.gort/`
      2. tracked source / docs / config changes from `git status --short`
      3. recent commits, repo docs, and nearby project instructions that indicate the active workstream
+   - do not inspect shared Gort controller files (`/home/choza/projects/gort/gort.md`, `gort.citations.md`, `context-compaction.md`, or `states/*.md`) as evidence for what the target repo should do next; use repo/runtime evidence instead
      4. recent pane output and the latest explicit user goal visible in the current tmux pane
    - ignore pure runtime noise unless it is itself the bug under investigation, including `.gort/`, `.beads/push-state.json`, capture bundles, caches, logs, and other generated artifacts
+   - if the evidence reveals unfinished or next-highest-value work, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
+   - when the repo is fresh or nearly empty and the user has already supplied a concrete product target, seed the first epic and first executable child directly instead of browsing generic command help or rediscovering standard `bd` operations
+   - do not emit interim worklog narration such as `Inspecting task status`, `Exploring recent commits`, or similar prose while gathering that evidence; inspect silently and speak only with the next complete structured state block
+   - during that first-epic seeding path, suppress visible thoughts or headings such as `Considering database tasks`, `Planning project structure`, and `Creating issues for transition`
+   - do not run generic help commands such as `bd --help`, `bd create --help`, `bd update --help`, `bd epic --help`, `bd show --help`, or `bd children --help` merely to remember standard create/claim/show flows already specified by the controller
    - if the evidence reveals unfinished or next-highest-value work, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
    - if the repo is truly quiescent after those checks, keep `EPIC: NONE` and continue to transition evaluation
 4. If the current or immediately preceding loop just completed meaningful durable work, run **POST-COMPLETION CONTINUATION SCAN** before allowing terminal `NIKTO`:
@@ -21,7 +27,7 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
    - look specifically for concrete follow-on work directly exposed by the completed change: regression protection, missing validation, cleanup needed to stabilize the result, docs or config updates needed to preserve the behavior, or adjacent hardening with a clear risk-reduction link
    - create exactly one follow-on epic only when the evidence supports a concrete next step with clear acceptance criteria
    - if only speculative or preference-dependent ideas remain, do not invent work; continue to transition evaluation so terminal handling can distinguish true quiescence from low-confidence next-step ambiguity
-5. Determine why `KLATU` cannot continue:
+5. Determine why `KLAATU` cannot continue:
    - missing child tasks
    - task too large
    - dependency gap
@@ -70,10 +76,10 @@ If only `bd` state changed, the `bd` write itself is sufficient durable state. N
 
 Evaluate after each cycle. Transition immediately on the first match:
 
-- one or more ready executable tasks now exist for current epic → transition to `KLATU`, reset LOOP
-- no current epic exists, but NO-EPICS RECOVERY created an epic with ready work → transition to `KLATU`, reset LOOP
+- one or more ready executable tasks now exist for current epic → transition to `KLAATU`, reset LOOP
+- no current epic exists, but NO-EPICS RECOVERY created an epic with ready work → transition to `KLAATU`, reset LOOP
 - no current epic exists, but NO-EPICS RECOVERY created an epic that still needs decomposition → remain in `BERADA` on that epic, reset LOOP
-- POST-COMPLETION CONTINUATION SCAN created a follow-on epic with ready work → transition to `KLATU`, reset LOOP
+- POST-COMPLETION CONTINUATION SCAN created a follow-on epic with ready work → transition to `KLAATU`, reset LOOP
 - POST-COMPLETION CONTINUATION SCAN created a follow-on epic that still needs decomposition → remain in `BERADA` on that epic, reset LOOP
 - current epic is fully complete → advance to next epic, reset LOOP
 - no further task creation or decomposition is possible because of a confirmed external blocker BERADA cannot reduce → transition to `NIKTO`

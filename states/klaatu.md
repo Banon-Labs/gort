@@ -1,4 +1,4 @@
-# STATE: KLATU
+# STATE: KLAATU
 
 Goal: execute one ready task for the current epic per loop.
 
@@ -45,13 +45,13 @@ Treat `git commit` reporting "nothing to commit" as **Success** if:
 - the task was validly closed, and
 - no tracked code change was required for completion.
 
-## KLATU transition guards
+## KLAATU transition guards
 
 Evaluate after each cycle. Transition immediately on the first match:
 
-- ready tasks still exist for current epic → repeat `KLATU`
+- ready tasks still exist for current epic → repeat `KLAATU`
 - no ready task exists for current epic, but current epic is not complete → transition to `BERADA`, reset LOOP
-- current epic is complete → advance to next epic, reset LOOP, re-enter `KLATU`
+- current epic is complete → advance to next epic, reset LOOP, re-enter `KLAATU`
 - all remaining work in current epic is blocked by a confirmed external, permission-bound, human-decision, missing-approval, missing-credential, or unavailable-external-dependency blocker that cannot be reduced locally → transition to `NIKTO`
 - all remaining work is blocked but the blocker may be reduced by decomposition, research, dependency repair, or another local corrective action → transition to `BERADA`, reset LOOP
 - no epics remain → transition to `NIKTO`

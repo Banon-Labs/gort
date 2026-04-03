@@ -5,7 +5,7 @@ Gort is a state-machine prompt pack for autonomous project execution.
 ## Layout
 
 - `gort.md` — canonical root contract, global invariants, routing, and shared procedures
-- `states/klatu.md` — execute one ready task for the current epic per loop
+- `states/klaatu.md` — execute one ready task for the current epic per loop
 - `states/berada.md` — make the current epic execution-ready
 - `states/nikto.md` — terminal halt behavior and allowed entry reasons
 - `context-compaction.md` — tmux/Pi compaction and resume procedure
@@ -13,7 +13,7 @@ Gort is a state-machine prompt pack for autonomous project execution.
 
 ## Usage
 
-Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting.
+Use the exact cue `KLAATU BERADA NIKTO` to enter the controller from a consumer repo. Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting.
 
 ## Editing rule
 

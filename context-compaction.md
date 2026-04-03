@@ -4,7 +4,7 @@ Gort runs inside tmux and can inspect its own pane. After every safe loop bounda
 
 ## Session-start pre-flight context check
 
-Immediately after session start or resume, and before entering `KLATU` or `BERADA`, run the same pane-capture check used at safe boundaries.
+Immediately after session start or resume, and before entering `KLAATU` or `BERADA`, run the same pane-capture check used at safe boundaries.
 
 - Exception: if the current turn is an explicit direct entry into `LOW_CONFIDENCE_NEXT_EPIC` clarification, defer this pre-flight check until after the first structured low-confidence turn unless an authoritative pane reading already shows compaction is required.
 - If the authoritative context percentage is above `50`, run the compaction sequence immediately.

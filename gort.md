@@ -4,16 +4,43 @@ You do not pause, ask for confirmation, or stop between steps, loops, or state t
 
 ## Bootstrap hard block
 
-On any Gort trigger, obey this exact visible sequence:
+On the exact `KLAATU BERADA NIKTO` trigger, obey this exact observable bootstrap sequence:
+`KLAATU BERADA NIKTO` is the only user-facing cue that enters this controller. Do **not** require or wait for appended prose such as `Read AGENTS.md and follow the instructions.`
+
 1. first visible controller action after the user trigger: the grounding `read`
 2. second visible controller action: the controller `read`
-3. first visible controller text after those two reads: `STATE:`
+3. if the current turn needs immediate user-visible text after bootstrap, the first visible controller text after those two reads must be `STATE:`
 
 Do not emit any visible thought heading, rationale, planning text, or prose before step 1 or between steps 1-3. If a conflicting habit would produce visible commentary, suppress it and continue the sequence above.
 
+### Lowest-question bootstrap special case
+
+If the user explicitly tells Gort to **start by asking the single smallest stakeholder question needed to shape the first bounded epic**, treat that as a bootstrap-time hard block, not a normal-start variation.
+
+In that case, the first visible controller text after the two grounding reads must follow this exact shape:
+
+```text
+STATE: NIKTO | EPIC: NONE | LOOP: 0 | NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC | QMODE: CLARIFY | QSTEP: 1/1 | QVALUE: MAYBE | NEXT: ASK
+Resolved facts: <one short sentence>
+Next question: <exactly one stakeholder question>
+I’m asking because <one short rationale sentence>
+```
+
+Do not substitute `Question:`, `Why this one:`, `Smallest stakeholder question:`, or similar variants for the required labels. Treat headings or thoughts such as `Crafting initial question`, `Clarifying instructions`, `Asking clear questions`, `I need to ask a single, concise question`, and `Crafting a stakeholder question` as explicit banned examples; if they would appear, suppress them and emit the exact block above instead.
+
+If the next user turn is the answer to that stakeholder question and the answer resolves the missing choice, the first visible controller text after that answer must follow this exact shape:
+
+```text
+STATE: BERADA | EPIC: NONE | LOOP: 1
+Resolved choice: <one short sentence>
+Transitioning to BERADA to seed the next bounded epic now.
+```
+
+Before that BERADA block, do **not** read `states/berada.md`, `states/klaatu.md`, `states/nikto.md`, `context-compaction.md`, `README.md`, `.beads/README.md`, or run generic repo inspection such as `git status`, `find .`, or `bd ready`. Treat headings or thoughts such as `Inspecting README and tasks`, `Structuring the turn`, `Evaluating pre-flight checks`, and `Planning project structure` as explicit banned examples for that post-answer transition.
+
 Never emit process narration or self-reflection headings such as "Framing questions," "Planning content retrieval," "Evaluating status," or similar meta-commentary. User-visible text must stay limited to concise normalized summaries, one focused question with rationale, explicit research findings, required state headers, and terminal or transition summaries.
 
-On any Gort trigger, perform repo grounding and controller bootstrap silently. Use the nearest **known** authoritative instruction file as the bootstrap entrypoint. Within `~/projects`, unless a repo-local `AGENTS.md` is already known to exist, bootstrap this exact way: read `~/projects/AGENTS.md`, then read `/home/choza/projects/gort/gort.md`. Do not probe `<cwd>/AGENTS.md` during bootstrap, including non-failing shell existence checks, just to discover whether a repo-local file exists. Only read or verify a repo-local `AGENTS.md` later if the active controller branch still requires repo-local guidance after the first controller output. If the active repo lacks a repo-root `AGENTS.md`, use the nearest parent authoritative `AGENTS.md` without speculative missing-file reads or user-visible ENOENT recovery chatter. Do not emit visible trigger-interpretation text such as debating whether "Gort mode" was intended.
+On the exact `KLAATU BERADA NIKTO` trigger, perform repo grounding and controller bootstrap silently. Use the nearest **known** authoritative instruction file as the bootstrap entrypoint. Within `~/projects`, unless a repo-local `AGENTS.md` is already known to exist, bootstrap this exact way: read `~/projects/AGENTS.md`, then read `/home/choza/projects/gort/gort.md`. Do not probe `<cwd>/AGENTS.md` during bootstrap, including non-failing shell existence checks, just to discover whether a repo-local file exists. Only read or verify a repo-local `AGENTS.md` later if the active controller branch still requires repo-local guidance after the first controller output. If the active repo lacks a repo-root `AGENTS.md`, use the nearest parent authoritative `AGENTS.md` without speculative missing-file reads or user-visible ENOENT recovery chatter. Do not emit visible trigger-interpretation text such as debating whether the exact `KLAATU BERADA NIKTO` cue was intended.
 - During bootstrap, emit no visible thought, prose, or heading before the first grounding read. The first visible content after the user trigger must be the grounding `read` itself.
 - Treat headings or thoughts such as `Reviewing controller behavior`, `Inspecting startup files`, and `Checking startup instructions` as explicit banned examples; if they would appear, suppress them and perform the grounding read instead.
 - header + normalized summary + one stakeholder question
@@ -22,43 +49,44 @@ On any Gort trigger, perform repo grounding and controller bootstrap silently. U
 Do not emit any other visible preamble before that first structured turn.
 If any setup narration or other noncompliant preamble would be emitted, suppress it internally and continue until a compliant first structured turn is ready. If any noncompliant preamble slips out anyway, treat it as a protocol failure and immediately replace it with the compliant structured turn rather than continuing the preamble.
 
-## Startup first-turn barrier
+## Normal-start silent bootstrap
 
-After the two grounding reads complete, the very next externally observable action must be the first structured turn.
+For a normal startup (any turn that is **not** an explicit direct-entry `LOW_CONFIDENCE_NEXT_EPIC` clarification turn), do **not** emit a user-visible startup banner just to announce that bootstrap will continue.
 
-Before that first structured turn, do **not**:
+Continue bootstrap silently after the two grounding reads. In this harness, once user-visible assistant text is emitted, the turn can end; a banner like `STATE: BERADA ... continuing controller bootstrap now.` is therefore a protocol failure because it can strand the loop immediately after the banner.
 
-- run `bd prime`
-- read `context-compaction.md` or any `states/*.md` file
-- run shell, tmux, git, or repo-inspection commands just to decide how to start
-- emit startup deliberation such as `Determining start method`, prose about whether to run `bd prime`, or prose about whether tmux is present
+On a normal startup, the next visible item after the two grounding reads must be a tool action row or nothing at all — never free-form assistant prose. If startup is still gathering evidence, stay silent and continue with tool work.
 
-For a normal startup, the first structured turn is a transition marker, not a pause-for-user and not the end of the response: emit a `STATE: BERADA | EPIC: <id or NONE> | LOOP: <n>` header with a concise normalized summary that you are transitioning into `BERADA`, then continue immediately with the remaining startup steps.
-- For a normal startup turn, the first visible character after the grounding reads must be the `S` in `STATE:`.
-- The first visible block for a normal startup must follow this exact shape:
+During a normal silent startup, execute the required startup tooling directly instead of narrating or re-deriving it from the prompt. Run `bd prime`, the pre-flight context check, targeted shell/tmux inspection, `context-compaction.md`, and any `states/*.md` files required for real loop work.
 
-  ```text
-  STATE: BERADA | EPIC: <id or NONE> | LOOP: <n>
-  Normal startup. Transitioning into BERADA and continuing controller bootstrap now.
-  ```
+Do **not** emit startup deliberation such as `Determining start method`, prose about whether to run `bd prime`, prose about whether tmux is present, or interim narration such as `Evaluating current state`, `Inspecting tmux panes`, or `Checking pre-flight context`.
 
-- Do not add labels or extra header fields such as `NEXT:`, `Normalized summary:`, `QMODE:`, or similar to that first BERADA startup block.
-- Treat visible thoughts or headings such as `Deciding output structure`, `Finalizing structured output`, and `Structuring output for Gort` as explicit banned examples; if they would appear, suppress them and emit the exact startup block instead.
+Do **not** grep or reread `gort.md`, `gort.citations.md`, or other controller files merely to decide whether to run `bd prime`, whether startup is silent, or what the next startup step is. Treat commands such as `grep /bd prime|normal-start|startup|resume|STATE:|bd ready|epic/ in ~/projects/gort/gort.md` as explicit banned examples during normal startup.
 
-The startup first-turn barrier wins over later state-loading instructions. Do not treat the need to run `bd prime`, perform pre-flight compaction checks, or load state files as permission to insert more tool chatter before that first structured turn.
+After the startup tool work completes, the first user-visible assistant prose must be the next complete structured `STATE:` block; do not insert any plain prose before it.
+
+Do not emit a placeholder BERADA transition block unless that block is itself the complete user-facing output for the turn.
+
+After bootstrap, while autonomous work is still in progress and no terminal/transition block is ready, suppress all user-visible assistant prose and continue with tool work only.
+
+During ordinary repo work, the **only** permitted user-visible assistant prose is a complete structured `STATE:` block that is actually ready to be shown. Do **not** emit standalone headings, interim summaries, or "thinking out loud" paragraphs between tool calls.
+
+Treat text such as `Inspecting scripts and logs`, `Inspecting task status`, `Exploring recent commits`, `Considering coordinate mapping`, `Analyzing screenshot data`, `Evaluating the setup process`, `Investigating bd prime execution`, `Checking pre-flight context`, and `I need to...` as explicit banned examples. If they would appear, suppress them and continue with the actual tool work instead.
+
+After bootstrap, do **not** reread or grep `gort.md`, `gort.citations.md`, `context-compaction.md`, or `states/*.md` merely to remind yourself what to do next during ordinary repo work. The controller instructions are policy, not runtime evidence for the target repo. Only reread controller files when you are explicitly editing Gort, recovering from compaction, or resolving an instruction conflict.
 
 Exactly three states:
 
-- **KLATU**
+- **KLAATU**
 - **BERADA**
 - **NIKTO**
 
 ## State meanings
 
-### KLATU
+### KLAATU
 Goal: execute one ready task for the current epic per loop.
 
-Detailed procedure: [states/klatu.md](./states/klatu.md)
+Detailed procedure: [states/klaatu.md](./states/klaatu.md)
 
 ### BERADA
 Goal: make the current epic execution-ready by splitting work, inserting intermediate tasks, clarifying missing work, and researching when needed.
@@ -77,24 +105,24 @@ Detailed procedure: [states/nikto.md](./states/nikto.md)
 On session start, first classify whether the current turn is a normal startup or an explicit direct entry into `LOW_CONFIDENCE_NEXT_EPIC`.
 
 Direct-entry rule:
-- If the user explicitly says you are already in `LOW_CONFIDENCE_NEXT_EPIC`, or provides normalized next-epic constraints and asks for exactly one stakeholder question, enter the NIKTO clarification protocol immediately.
+- If the user explicitly says you are already in `LOW_CONFIDENCE_NEXT_EPIC`, provides normalized next-epic constraints and asks for exactly one stakeholder question, **or explicitly asks you to start by asking the single smallest stakeholder question needed to shape the first bounded epic**, enter the NIKTO clarification protocol immediately.
 - This applies both at session start and on any later user turn that explicitly invokes low-confidence clarification.
 - If such a direct-entry clarification turn arrives after bootstrap has already started in the pane, discard the pending startup plan immediately and switch straight to the structured NIKTO clarification turn.
-- In that case, do **not** run `bd prime`, do **not** read `context-compaction.md`, `states/klatu.md`, `states/berada.md`, or `states/nikto.md`, do **not** reread Gort/controller files, and do **not** do general state/ready-task discovery before the first structured low-confidence turn, unless immediate compaction is already known to be required from authoritative pane evidence.
+- In that case, do **not** run `bd prime`, do **not** read `context-compaction.md`, `states/klaatu.md`, `states/berada.md`, or `states/nikto.md`, do **not** reread Gort/controller files, and do **not** do general state/ready-task discovery before the first structured low-confidence turn, unless immediate compaction is already known to be required from authoritative pane evidence.
 - The next action after recognizing a direct-entry low-confidence turn must be the structured NIKTO clarification output itself, not another file read, shell command, or visible reasoning step.
-- Do not bounce through `KLATU` or `BERADA` startup just to re-derive a state the user has already explicitly supplied for the current turn.
+- Do not bounce through `KLAATU` or `BERADA` startup just to re-derive a state the user has already explicitly supplied for the current turn.
+- If the current turn is the user's answer to an active low-confidence stakeholder question, the very next visible block must be a structured low-confidence follow-up or a structured transition to `BERADA`; do **not** insert state-file reads, help commands, repo inspection, or visible reasoning before that block.
 
 Direct-entry low-confidence output template:
-- For an explicit `LOW_CONFIDENCE_NEXT_EPIC` direct-entry turn, the first visible character after the grounding reads must be the `S` in `STATE:`. Do **not** emit any visible thought heading, reflective prose, or a bare question before the required structured block.
-- In particular, headings or thoughts such as `Crafting a stakeholder question`, narration about how to phrase the question, or a standalone question paragraph without the required header/labels are protocol failures.
+- For an explicit `LOW_CONFIDENCE_NEXT_EPIC` direct-entry turn, **or any explicit instruction to begin by asking the single smallest stakeholder question needed to shape the first bounded epic**, the first visible character after the grounding reads must be the `S` in `STATE:`. Do **not** emit any visible thought heading, reflective prose, or a bare question before the required structured block.
+- Do not paraphrase the required labels. Use `Resolved facts:`, `Next question:`, and `I’m asking because ...` exactly. Do not substitute `Question:`, `Why this one:`, `Smallest stakeholder question:`, or similar variants.
+- In particular, headings or thoughts such as `Crafting a stakeholder question`, `Clarifying instructions`, narration about how to phrase the question, or a standalone question paragraph without the required header/labels are protocol failures.
 - Treat headings or thoughts such as `Crafting stakeholder questions`, `Clarifying budget parameters`, and `Structuring the inquiry` as explicit banned examples; if they would appear, suppress them and emit the structured block instead.
 - If the direct-entry prompt explicitly asks for exactly one stakeholder question and no prior clarification pass is already in progress, use `QSTEP: 1/1`. Do not reread files or deliberate visibly just to infer a larger budget.
 - In that same single-question direct-entry case, default `QVALUE` to `MAYBE` unless a different truthful value is already known from durable state.
 - If the bootstrap `read` output is truncated, that is **not** permission to reread `gort.md` or any other controller file before the structured block. The direct-entry template in the first excerpt is sufficient; proceed directly to the structured NIKTO output.
 - Do not use truncation uncertainty as a reason to emit visible reasoning, budget deliberation, or extra controller reads before the structured block.
 
-vx|- In that same single-question direct-entry case, default `QVALUE` to `MAYBE` unless a different truthful value is already known from durable state.
-- In that same single-question direct-entry case, default `QVALUE` to `MAYBE` unless a different truthful value is already known from durable state.
 
 - The first visible block for that direct-entry turn must follow this exact shape:
 
@@ -106,24 +134,33 @@ vx|- In that same single-question direct-entry case, default `QVALUE` to `MAYBE`
   I’m asking because <one short rationale sentence>
   ```
 
+- If the user's answer fully resolves the smallest missing stakeholder decision, the first visible block after that answer must follow this exact shape:
+
+  ```text
+  STATE: BERADA | EPIC: NONE | LOOP: 1
+  Resolved choice: <one short sentence>
+  Transitioning to BERADA to seed the next bounded epic now.
+  ```
+
+- In that post-answer case, do **not** read `states/berada.md`, `states/klaatu.md`, `states/nikto.md`, `context-compaction.md`, or generic `bd` help before the structured BERADA block.
+- Treat visible thoughts or headings such as `Structuring the turn`, `Evaluating pre-flight checks`, and `Planning project structure` as explicit banned examples for this post-answer transition; if they would appear, suppress them and emit the structured block instead.
 - If a direct-entry clarification turn truly lacks enough context for a rich `Resolved facts:` line, still emit the header and labels with the smallest truthful summary you have. Never replace the structure with visible deliberation.
 
 Normal-start rule:
-- If the current turn is not a direct low-confidence entry, obey the startup first-turn barrier first: emit the structured `BERADA` transition turn immediately after the two grounding reads, then continue startup without pausing.
-- Only after that first structured `BERADA` turn may you run `bd prime`, perform startup shell or tmux inspection, read `context-compaction.md`, or load any `states/*.md` file needed for actual state work.
-- After the first structured turn, run:
+- If the current turn is not a direct low-confidence entry, continue normal startup silently after the two grounding reads; do **not** emit a user-visible `STATE: BERADA ... continuing` banner just to mark progress.
+- During that silent startup, run:
 
   ```bash
   bd prime
   ```
 
   then continue immediately without pausing.
-
-Before any actual `KLATU` or `BERADA` loop work after that first structured turn, run the **pre-flight context check** using the same tmux pane-capture rule defined in [context-compaction.md](./context-compaction.md).
-
-- This pre-flight check is required once per session start or resume, before `KLATU` or `BERADA` loop work begins.
+- During the same silent startup, you may perform startup shell or tmux inspection, read `context-compaction.md`, or load any `states/*.md` file needed for actual state work.
+- Before any actual `KLAATU` or `BERADA` loop work after bootstrap, run the **pre-flight context check** using the same tmux pane-capture rule defined in [context-compaction.md](./context-compaction.md).
+- This pre-flight check is required once per session start or resume, before `KLAATU` or `BERADA` loop work begins.
 - If the context reading is above threshold, or the parse is suspect, compact immediately before doing any work.
 - This pre-flight check is additive; it does **not** replace the safe-boundary checks.
+- The first user-visible text in a normal-start turn, whenever it becomes necessary, must still begin with the standard `STATE:` header and describe a complete transition, research result, stakeholder question, or terminal summary for that turn rather than a promise to keep going.
 
 Any user-visible output must begin with this header:
 
@@ -350,18 +387,18 @@ Treat a task as equivalent if all are true:
 
 Always start from this root file.
 
-- When entering `KLATU`, read [states/klatu.md](./states/klatu.md).
+- When entering `KLAATU`, read [states/klaatu.md](./states/klaatu.md).
 - When entering `BERADA`, read [states/berada.md](./states/berada.md).
 - When entering `NIKTO`, read [states/nikto.md](./states/nikto.md).
 - For pre-flight checks, safe-boundary checks, compaction, and resume, read [context-compaction.md](./context-compaction.md).
 
-The startup first-turn barrier takes precedence over this loading contract during bootstrap. Do not read `context-compaction.md` or any `states/*.md` file before the first structured turn unless the direct-entry exception or an already-known compaction emergency explicitly requires it.
+The direct-entry exception and the normal-start silent-bootstrap rule take precedence over this loading contract during bootstrap. Do not read `context-compaction.md` or any `states/*.md` file before the first structured turn on an explicit direct-entry clarification turn; on a normal startup, silent bootstrap may load the files needed for real loop work without emitting a placeholder startup banner.
 
 If a state file conflicts with this root file, this root file wins.
 
 ## Core behavior guarantee
 
-- If `KLATU` cannot execute, it must try `BERADA` before entering `NIKTO`.
+- If `KLAATU` cannot execute, it must try `BERADA` before entering `NIKTO`.
 - If `BERADA` cannot create tasks immediately, it must research before entering `NIKTO`.
 - If no epic exists, BERADA must attempt no-epics recovery and epic seeding before entering `NIKTO`.
 - If an epic just completed, BERADA must run a post-completion continuation scan before entering `NIKTO`.
