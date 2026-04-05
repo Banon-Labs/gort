@@ -6,6 +6,27 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-05 — restore fresh-context bootstrap to the active repo's authoritative `AGENTS.md`
+
+### Local evidence
+
+- Fresh prompt-pack review in this workspace found that the top bootstrap paragraph in [`./gort.md`](./gort.md) now explicitly preferred `~/projects/AGENTS.md` unless a repo-local `AGENTS.md` was already known and forbade discovering `<cwd>/AGENTS.md` during bootstrap.
+- That wording directly conflicted with [`./AGENTS.md`](./AGENTS.md), which already says consumer repositories keep their own repo-root `AGENTS.md` authoritative and that the active repository's worktree/runtime state is authoritative for transient execution state.
+- In a fresh context, that conflict makes the fallback rule win operationally, so the first motion can skip the active repo's grounding `AGENTS.md` even when the current Gort action is clearly anchored to that repo/worktree.
+- Related `bd` issue trail: `gort-2t0`
+- Updated files: [`./gort.md`](./gort.md), [`./AGENTS.md`](./AGENTS.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [Claude Docs — General principles](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/general-principles)
+
+### Why these sources support the repair
+
+- Anthropic's context-engineering guidance supports keeping the authority chain explicit and internally consistent so the controller starts from the right local instructions instead of a broader fallback context.
+- Claude's prompt-engineering guidance supports removing contradictory directives and expressing the desired first-step behavior directly at the high-priority bootstrap boundary.
+- Together with the local wording conflict, these sources justify a narrow repair: restore active-repo `AGENTS.md` precedence for fresh-context bootstrap while keeping `~/projects/AGENTS.md` as a fallback only when no more specific authority is already anchored to the current Gort action.
+
 ## 2026-04-03 — canonical `KLAATU BERADA NIKTO` cue with compatibility-tolerant recognition
 
 ### Local evidence

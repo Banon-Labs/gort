@@ -13,6 +13,7 @@ This repository contains the shared Gort prompt pack and supporting documentatio
 - When Gort is used from another repository, prefer the exact reinjection cue `KLAATU BERADA NIKTO` from that active repository.
 - Only reinject directly into `/home/choza/projects/gort/gort.md` when the active work itself is on the Gort prompt-pack repository.
 - Treat the active repository's Beads state, worktree, and runtime files as authoritative for transient execution state.
+- On fresh-context bootstrap, the first grounding `read` should come from the active repository's authoritative `AGENTS.md` when the current Gort action is already anchored to that repo/worktree; `~/projects/AGENTS.md` is only the fallback when no more specific active-repo authority is available.
 
 - When this repo is referenced from another repository only as shared controller logic, that alone does **not** authorize reading or mutating `/home/choza/projects/gort/.beads`.
 - Gort repo Beads becomes authoritative only after the active work explicitly switches to `/home/choza/projects/gort` or the user explicitly requests cross-repo migration/cleanup into this tracker.
