@@ -15,6 +15,16 @@ Gort is a state-machine prompt pack for autonomous project execution.
 
 Use the canonical cue `KLAATU BERADA NIKTO` to enter the controller from a consumer repo. Recognition is case-insensitive and may accept common alternate spellings for compatibility (for example `Klatu Berata Nicto`), but docs and examples should always use the canonical form. Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting.
 
+## Validation
+
+Run the lightweight duplicate-line guard before finishing Markdown-heavy edits:
+
+```bash
+python3 scripts/check_markdown_duplicates.py
+```
+
+The checker fails on accidental adjacent duplicate non-empty Markdown lines outside fenced code blocks.
+
 ## Editing rule
 
 Changes to `gort.md`, the state files, or compaction behavior must be backed by citations in `gort.citations.md`.
