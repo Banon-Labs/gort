@@ -36,8 +36,8 @@ Use this protocol only when `NIKTO_REASON` is `LOW_CONFIDENCE_NEXT_EPIC`.
 If the user explicitly says you are already in low-confidence next-epic mode, or provides normalized next-epic constraints and asks for exactly one stakeholder question, treat that as an active protocol invocation for the current turn.
 
 - The next action must be the structured low-confidence turn itself.
-- If that invocation arrives after bootstrap or startup work has already begun in the pane, discard the pending startup plan immediately and switch straight to the structured low-confidence turn.
-- Do not rerun session-start bootstrap, `bd prime`, pre-flight compaction reads, `context-compaction.md`, `states/klaatu.md`, `states/berada.md`, `states/nikto.md`, other controller/state-file reads, or broad repo-triage before producing that turn unless immediate compaction is already known to be required from authoritative pane evidence.
+- If that invocation arrives after bootstrap or startup work has already begun in the current session, discard the pending startup plan immediately and switch straight to the structured low-confidence turn.
+- Do not rerun session-start bootstrap, `bd prime`, compaction-policy reads, `context-compaction.md`, `states/klaatu.md`, `states/berada.md`, `states/nikto.md`, other controller/state-file reads, or broad repo-triage before producing that turn unless an explicit non-visual compaction request or runtime signal is already known to require immediate handoff.
 - Do not insert any file reads, shell commands, or visible reasoning steps between the explicit low-confidence invocation and the first structured low-confidence turn.
 
 1. Before asking anything, classify the missing uncertainty:

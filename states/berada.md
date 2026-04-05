@@ -9,21 +9,20 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
 3. If no current epic exists, run **NO-EPICS RECOVERY** before allowing terminal `NIKTO`:
    - confirm `bd ready --json --limit 100` is empty and perform an authoritative open-task check
    - inspect durable local evidence for the next logical workstream, in this order:
-     1. pane-local Gort runtime state under `$GORT_ROOT/.gort/`
+     1. window-local Gort runtime state under `$GORT_ROOT/.gort/`
      2. tracked source / docs / config changes from `git status --short`
      3. recent commits, repo docs, and nearby project instructions that indicate the active workstream
+     4. the latest explicit user goal and any durable session notes already available locally
    - do not inspect shared Gort controller files (`/home/choza/projects/gort/gort.md`, `gort.citations.md`, `context-compaction.md`, or `states/*.md`) as evidence for what the target repo should do next; use repo/runtime evidence instead
-     4. recent pane output and the latest explicit user goal visible in the current tmux pane
    - ignore pure runtime noise unless it is itself the bug under investigation, including `.gort/`, `.beads/push-state.json`, capture bundles, caches, logs, and other generated artifacts
    - if the evidence reveals unfinished or next-highest-value work, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
    - when the repo is fresh or nearly empty and the user has already supplied a concrete product target, seed the first epic and first executable child directly instead of browsing generic command help or rediscovering standard `bd` operations
    - do not emit interim worklog narration such as `Inspecting task status`, `Exploring recent commits`, or similar prose while gathering that evidence; inspect silently and speak only with the next complete structured state block
    - during that first-epic seeding path, suppress visible thoughts or headings such as `Considering database tasks`, `Planning project structure`, and `Creating issues for transition`
    - do not run generic help commands such as `bd --help`, `bd create --help`, `bd update --help`, `bd epic --help`, `bd show --help`, or `bd children --help` merely to remember standard create/claim/show flows already specified by the controller
-   - if the evidence reveals unfinished or next-highest-value work, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
    - if the repo is truly quiescent after those checks, keep `EPIC: NONE` and continue to transition evaluation
 4. If the current or immediately preceding loop just completed meaningful durable work, run **POST-COMPLETION CONTINUATION SCAN** before allowing terminal `NIKTO`:
-   - inspect the most recent closed issues, recent commits, validation results, fresh `git status --short` or diff evidence, nearby repo docs, and the latest pane output
+   - inspect the most recent closed issues, recent commits, validation results, fresh `git status --short` or diff evidence, nearby repo docs, and the latest explicit user goal or durable session notes
    - look specifically for concrete follow-on work directly exposed by the completed change: regression protection, missing validation, cleanup needed to stabilize the result, docs or config updates needed to preserve the behavior, or adjacent hardening with a clear risk-reduction link
    - create exactly one follow-on epic only when the evidence supports a concrete next step with clear acceptance criteria
    - if only speculative or preference-dependent ideas remain, do not invent work; continue to transition evaluation so terminal handling can distinguish true quiescence from low-confidence next-step ambiguity
@@ -56,7 +55,7 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
 11. If a task is not create-ready, state exactly what must be clarified, research it, then create tasks from the result.
 12. Make any durable task-tree or code changes needed to make the epic execution-ready.
 13. If code changed in BERADA, commit it before leaving BERADA.
-14. Perform the context-compaction check at the safe boundary using [../context-compaction.md](../context-compaction.md).
+14. Apply the compaction handoff policy at the safe boundary using [../context-compaction.md](../context-compaction.md).
 15. Evaluate transition guards immediately.
 
 ### BERADA may perform durable work

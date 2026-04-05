@@ -57,9 +57,9 @@ Continue bootstrap silently after the two grounding reads. In this harness, once
 
 On a normal startup, the next visible item after the two grounding reads must be a tool action row or nothing at all — never free-form assistant prose. If startup is still gathering evidence, stay silent and continue with tool work.
 
-During a normal silent startup, execute the required startup tooling directly instead of narrating or re-deriving it from the prompt. Run `bd prime`, the pre-flight context check, targeted shell/tmux inspection, `context-compaction.md`, and any `states/*.md` files required for real loop work.
+During a normal silent startup, execute the required startup tooling directly instead of narrating or re-deriving it from the prompt. Run `bd prime`, read `context-compaction.md`, and load any `states/*.md` files required for real loop work. Do **not** perform screen-scrape checks, percentage parsing, or tmux-specific startup actions.
 
-Do **not** emit startup deliberation such as `Determining start method`, prose about whether to run `bd prime`, prose about whether tmux is present, or interim narration such as `Evaluating current state`, `Inspecting tmux panes`, or `Checking pre-flight context`.
+Do **not** emit startup deliberation such as `Determining start method`, prose about whether to run `bd prime`, prose about whether compaction is needed, or interim narration such as `Evaluating current state`, `Inspecting terminal windows`, or `Checking pre-flight context`.
 
 Do **not** grep or reread `gort.md`, `gort.citations.md`, or other controller files merely to decide whether to run `bd prime`, whether startup is silent, or what the next startup step is. Treat commands such as `grep /bd prime|normal-start|startup|resume|STATE:|bd ready|epic/ in ~/projects/gort/gort.md` as explicit banned examples during normal startup.
 
@@ -107,8 +107,8 @@ On session start, first classify whether the current turn is a normal startup or
 Direct-entry rule:
 - If the user explicitly says you are already in `LOW_CONFIDENCE_NEXT_EPIC`, provides normalized next-epic constraints and asks for exactly one stakeholder question, **or explicitly asks you to start by asking the single smallest stakeholder question needed to shape the first bounded epic**, enter the NIKTO clarification protocol immediately.
 - This applies both at session start and on any later user turn that explicitly invokes low-confidence clarification.
-- If such a direct-entry clarification turn arrives after bootstrap has already started in the pane, discard the pending startup plan immediately and switch straight to the structured NIKTO clarification turn.
-- In that case, do **not** run `bd prime`, do **not** read `context-compaction.md`, `states/klaatu.md`, `states/berada.md`, or `states/nikto.md`, do **not** reread Gort/controller files, and do **not** do general state/ready-task discovery before the first structured low-confidence turn, unless immediate compaction is already known to be required from authoritative pane evidence.
+- If such a direct-entry clarification turn arrives after bootstrap has already started in the current session, discard the pending startup plan immediately and switch straight to the structured NIKTO clarification turn.
+- In that case, do **not** run `bd prime`, do **not** read `context-compaction.md`, `states/klaatu.md`, `states/berada.md`, or `states/nikto.md`, do **not** reread Gort/controller files, and do **not** do general state/ready-task discovery before the first structured low-confidence turn, unless an explicit non-visual compaction request or runtime signal is already known to require immediate handoff.
 - The next action after recognizing a direct-entry low-confidence turn must be the structured NIKTO clarification output itself, not another file read, shell command, or visible reasoning step.
 - Do not bounce through `KLAATU` or `BERADA` startup just to re-derive a state the user has already explicitly supplied for the current turn.
 - If the current turn is the user's answer to an active low-confidence stakeholder question, the very next visible block must be a structured low-confidence follow-up or a structured transition to `BERADA`; do **not** insert state-file reads, help commands, repo inspection, or visible reasoning before that block.
@@ -155,11 +155,9 @@ Normal-start rule:
   ```
 
   then continue immediately without pausing.
-- During the same silent startup, you may perform startup shell or tmux inspection, read `context-compaction.md`, or load any `states/*.md` file needed for actual state work.
-- Before any actual `KLAATU` or `BERADA` loop work after bootstrap, run the **pre-flight context check** using the same tmux pane-capture rule defined in [context-compaction.md](./context-compaction.md).
-- This pre-flight check is required once per session start or resume, before `KLAATU` or `BERADA` loop work begins.
-- If the context reading is above threshold, or the parse is suspect, compact immediately before doing any work.
-- This pre-flight check is additive; it does **not** replace the safe-boundary checks.
+- During the same silent startup, you may read `context-compaction.md` or load any `states/*.md` file needed for actual state work, but do **not** perform screen inspection, context-meter parsing, or tmux-specific startup actions.
+- Before any actual `KLAATU` or `BERADA` loop work after bootstrap, honor any already-known explicit compaction request or runtime-required handoff defined in [context-compaction.md](./context-compaction.md).
+- There is no required visual pre-flight context check at session start or resume.
 - The first user-visible text in a normal-start turn, whenever it becomes necessary, must still begin with the standard `STATE:` header and describe a complete transition, research result, stakeholder question, or terminal summary for that turn rather than a promise to keep going.
 
 Any user-visible output must begin with this header:
@@ -215,21 +213,21 @@ Consistency rules:
 
 - Reinjected prompts must be stable and state-agnostic. Do **not** embed `STATE`, `EPIC`, `LOOP`, task IDs, or Beads-derived execution state in the reinjected prompt text.
 - Use prompt text only to locate and load the Gort instructions. Recover transient execution state from external sources described by those instructions.
-- On session start or after compaction, check for pane-local runtime state under `$GORT_ROOT/.gort/` using the current tmux pane identity and restore the last known machine position from there when available.
-- Treat `bd` state and the current issue tree as the authority for current work structure. Treat the pane-local runtime state file as the authority for the last known controller position.
+- On session start or after compaction, check for window-local runtime state under `$GORT_ROOT/.gort/` using the current kitty window identity (`KITTY_WINDOW_ID`) and restore the last known machine position from there when available.
+- Treat `bd` state and the current issue tree as the authority for current work structure. Treat the window-local runtime state file as the authority for the last known controller position.
 - If external runtime state is missing, stale, or invalid, recover from `bd ready --json --limit 100` and continue under the normal state-transition rules.
 
 ### No-epics recovery
 
 - `NO_EPICS` is terminal only after BERADA performs a fresh no-epics recovery pass and still cannot infer a credible next epic.
-- On session start or resume, if the recovered machine position or latest visible pane status is `STATE: NIKTO | ... | NIKTO_REASON: NO_EPICS`, treat it as a stale snapshot to recover from, not as an instruction to stop again.
+- On session start or resume, if the recovered machine position is `STATE: NIKTO | ... | NIKTO_REASON: NO_EPICS`, treat it as a stale snapshot to recover from, not as an instruction to stop again.
 - Recovery action: re-enter `BERADA` with `CURRENT_EPIC=NONE` and `LOOP=1`, then run the no-epics recovery steps in [states/berada.md](./states/berada.md).
 - A repo is only quiescent enough for terminal `NO_EPICS` when Beads shows no open work **and** there is no durable local evidence of unfinished meaningful work that should be turned into a new epic.
 
 ### Post-completion continuation scan
 
 - If the current epic was just completed, or the current session just produced durable code / validation / artifact changes, BERADA must run a fresh follow-on opportunity scan before allowing terminal `NIKTO`.
-- The scan must inspect the most recent closed issues, recent commits, recent validation results, fresh `git status --short` / diff evidence, nearby repo instructions or docs, and the latest pane output for concrete next-step signals.
+- The scan must inspect the most recent closed issues, recent commits, recent validation results, fresh `git status --short` / diff evidence, nearby repo instructions or docs, and the latest explicit user goal or durable session notes for concrete next-step signals.
 - Prefer evidence-backed follow-ons such as regression protection, cleanup required to stabilize the new behavior, missing validation exposed by the completed work, docs or config updates needed to make the result durable, and adjacent hardening that directly reduces risk from the just-finished change.
 - Do **not** create speculative epics based only on vague "could improve" ideas. If no concrete next epic can be justified after the scan, route to the normal BERADA transition guards.
 

@@ -6,6 +6,30 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-05 — remove tmux/screen-threshold compaction rules and switch handoff automation to kitty
+
+### Local evidence
+
+- Fresh repo grep in this workspace showed that [`./context-compaction.md`](./context-compaction.md) still required tmux pane inspection, visible percentage parsing, a `50%` threshold, and `tmux send-keys`-based `/new` reinjection.
+- The same grep showed follow-on references in [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md), [`./states/klaatu.md`](./states/klaatu.md), and [`./states/nikto.md`](./states/nikto.md) that still assumed tmux panes, pane output, or required pre-flight/safe-boundary screen checks.
+- The user clarified two current constraints for the live environment: tmux actions are no longer allowed, and screen-based `50%` threshold checks should be removed because they are no longer needed and cannot be relied on.
+- Local command evidence confirmed kitty remote control support for `kitten @ send-text`, including explicit matching by `KITTY_WINDOW_ID`, `--from-file`, and escaped `\r` submits.
+- Related `bd` issue trail: `gort-6kh`
+- Updated files: [`./context-compaction.md`](./context-compaction.md), [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md), [`./states/klaatu.md`](./states/klaatu.md), [`./states/nikto.md`](./states/nikto.md), [`./README.md`](./README.md)
+
+### Primary supporting sources
+
+- [kitty — Control kitty from scripts](https://sw.kovidgoyal.net/kitty/remote-control/)
+- [kitten @ send-text man page](https://man.archlinux.org/man/kitten-@-send-text.1.en)
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+
+### Why these sources support the repair
+
+- The local evidence showed that the compaction contract still depended on exactly the mechanisms the user said are no longer available: tmux pane control and visible threshold parsing.
+- The kitty documentation supports replacing tmux `send-keys` style handoff with kitty remote control targeted by window identity and explicit text injection.
+- Anthropic's context-engineering guidance supports removing stale or contradictory recovery paths when the environment contract changes, so the controller does not keep reaching for invalid tools.
+- Together these sources justify a narrow repair: remove screen-threshold and tmux-action rules, keep compaction trigger logic non-visual, and make automated reinjection kitty-native when automation is still needed.
+
 ## 2026-04-05 — restore fresh-context bootstrap to the active repo's authoritative `AGENTS.md`
 
 ### Local evidence
@@ -67,9 +91,6 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - That third rerun finally emitted the exact `STATE: NIKTO ... | QMODE: CLARIFY | QSTEP: 1/1 | QVALUE: MAYBE | NEXT: ASK` block with the correct `Resolved facts:` / `Next question:` / `I’m asking because ...` labels, but it still leaked visible thought (`Asking clear questions`) immediately before the block.
 - Fresh post-answer rerun ANSI artifact: `/tmp/gort-e2e-rerun-postanswer-3.ansi.txt`
 - The post-answer rerun still read `states/*.md`, `context-compaction.md`, `README.md`, and performed generic repo inspection before the structured BERADA transition, confirming the need for a top-level post-answer barrier in the same early excerpt.
-- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
-- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
-- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
 - Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md)
 
 ### Primary supporting sources

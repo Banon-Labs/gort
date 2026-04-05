@@ -34,7 +34,7 @@ Goal: execute one ready task for the current epic per loop.
    /home/choza/projects/scripts/bd-visibility-bundle.sh --updated-id <id>
    ```
 
-9. Perform the context-compaction check at the safe boundary using [../context-compaction.md](../context-compaction.md).
+9. Apply the compaction handoff policy at the safe boundary using [../context-compaction.md](../context-compaction.md).
 10. Increment LOOP.
 11. Re-check ready tasks and repeat.
 

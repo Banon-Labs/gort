@@ -8,7 +8,7 @@ Gort is a state-machine prompt pack for autonomous project execution.
 - `states/klaatu.md` — execute one ready task for the current epic per loop
 - `states/berada.md` — make the current epic execution-ready
 - `states/nikto.md` — terminal halt behavior and allowed entry reasons
-- `context-compaction.md` — tmux/Pi compaction and resume procedure
+- `context-compaction.md` — kitty/Pi compaction and resume procedure
 - `gort.citations.md` — evidence log for edits and design changes
 
 ## Usage
