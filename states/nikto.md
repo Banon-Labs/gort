@@ -1,6 +1,6 @@
 # STATE: NIKTO
 
-Terminal state, except that `LOW_CONFIDENCE_NEXT_EPIC` runs a bounded clarification/research protocol before final stop.
+Terminal state. `NO_EPICS` means true completion/quiescence. `LOW_CONFIDENCE_NEXT_EPIC` is the non-quiescent uncertainty branch and runs a bounded clarification/research protocol before final stop.
 
 ## On entry
 
@@ -12,9 +12,11 @@ Terminal state, except that `LOW_CONFIDENCE_NEXT_EPIC` runs a bounded clarificat
 
 2. If `NIKTO_REASON` is `LOW_CONFIDENCE_NEXT_EPIC`, run the **LOW-CONFIDENCE NEXT-EPIC PROTOCOL** before emitting the final stop summary.
 3. If that protocol gathers enough information to define one bounded next epic or ticket with acceptance criteria, transition immediately to `BERADA` with `CURRENT_EPIC=NONE` and `LOOP=1` instead of stopping.
-4. Otherwise emit one terse summary of completed work.
-5. Include the `NIKTO_REASON`.
-6. Stop.
+4. If `NIKTO_REASON` is `NO_EPICS`, emit one terse completion/quiescence summary only.
+5. If `NIKTO_REASON` is `LOW_CONFIDENCE_NEXT_EPIC`, emit a terse uncertainty summary naming the smallest remaining decision or evidence gap.
+6. If the visible stop summary mentions plausible meaningful follow-on work, unresolved next-step ambiguity, or a smallest remaining decision, the reason may not be `NO_EPICS`.
+7. Include the `NIKTO_REASON`.
+8. Stop.
 
 ## NIKTO entry rule
 
@@ -22,12 +24,19 @@ Enter `NIKTO` only when one of these is true:
 
 | Rule | Condition | NIKTO_REASON |
 |---|---|---|
-| 1 | No epics remain after a fresh `bd ready --json --limit 100`, an authoritative open-task check, a BERADA no-epics recovery pass, a post-completion continuation scan, and confirmed repo quiescence | `NO_EPICS` |
+| 1 | No epics remain after a fresh `bd ready --json --limit 100`, an authoritative open-task check, a BERADA no-epics recovery pass, a post-completion continuation scan, confirmed repo quiescence, and confirmation that no plausible unfinished meaningful work or unresolved next-step ambiguity remains | `NO_EPICS` |
 | 2 | Permanent error | `PERMANENT_ERROR: <detail>` |
 | 3 | `bd` unavailable after 8 classified transient retries | `BD_UNAVAILABLE` |
 | 4 | LOOP exceeded 10 in one state without progress | `LOOP_EXCEEDED: <state>` |
 | 5 | All remaining work blocked by a confirmed external blocker that BERADA cannot reduce | `EXTERNAL_BLOCKER: <detail>` |
 | 6 | Meaningful follow-on work may exist, but no concrete next epic can be justified without subjective guidance or higher-confidence evidence | `LOW_CONFIDENCE_NEXT_EPIC` |
+
+## Terminal reason exclusivity
+
+- `NO_EPICS` and `LOW_CONFIDENCE_NEXT_EPIC` are mutually exclusive.
+- `NO_EPICS` means the machine has finished recovery/continuation scanning and found no plausible meaningful follow-on work.
+- `LOW_CONFIDENCE_NEXT_EPIC` means plausible meaningful follow-on work still exists, but the next bounded epic cannot yet be justified.
+- Therefore, a visible `NO_EPICS` summary may not speculate about possible next work, and any visible uncertainty about follow-on work must route through `LOW_CONFIDENCE_NEXT_EPIC` instead.
 
 ## LOW-CONFIDENCE NEXT-EPIC PROTOCOL
 

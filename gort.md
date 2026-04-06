@@ -219,17 +219,20 @@ Consistency rules:
 
 ### No-epics recovery
 
-- `NO_EPICS` is terminal only after BERADA performs a fresh no-epics recovery pass and still cannot infer a credible next epic.
+- `NO_EPICS` is terminal only after BERADA performs a fresh no-epics recovery pass, runs any required post-completion continuation scan, and still finds no plausible unfinished meaningful work or credible follow-on epic.
 - On session start or resume, if the recovered machine position is `STATE: NIKTO | ... | NIKTO_REASON: NO_EPICS`, treat it as a stale snapshot to recover from, not as an instruction to stop again.
 - Recovery action: re-enter `BERADA` with `CURRENT_EPIC=NONE` and `LOOP=1`, then run the no-epics recovery steps in [states/berada.md](./states/berada.md).
-- A repo is only quiescent enough for terminal `NO_EPICS` when Beads shows no open work **and** there is no durable local evidence of unfinished meaningful work that should be turned into a new epic.
+- A repo is only quiescent enough for terminal `NO_EPICS` when Beads shows no open work, there is no durable local evidence of unfinished meaningful work that should become a new epic, and no unresolved next-step ambiguity remains that would route through `LOW_CONFIDENCE_NEXT_EPIC`.
+- Mutual-exclusion rule: if the terminal summary still needs to mention plausible meaningful follow-on work, a smallest remaining decision, or uncertainty about whether another bounded epic should exist, the reason may not be `NO_EPICS`; route through `LOW_CONFIDENCE_NEXT_EPIC` instead.
 
 ### Post-completion continuation scan
 
 - If the current epic was just completed, or the current session just produced durable code / validation / artifact changes, BERADA must run a fresh follow-on opportunity scan before allowing terminal `NIKTO`.
 - The scan must inspect the most recent closed issues, recent commits, recent validation results, fresh `git status --short` / diff evidence, nearby repo instructions or docs, and the latest explicit user goal or durable session notes for concrete next-step signals.
 - Prefer evidence-backed follow-ons such as regression protection, cleanup required to stabilize the new behavior, missing validation exposed by the completed work, docs or config updates needed to make the result durable, and adjacent hardening that directly reduces risk from the just-finished change.
-- Do **not** create speculative epics based only on vague "could improve" ideas. If no concrete next epic can be justified after the scan, route to the normal BERADA transition guards.
+- Do **not** create speculative epics based only on vague "could improve" ideas.
+- If the scan reveals plausible meaningful follow-on work but not enough confidence to justify one bounded epic yet, route to `LOW_CONFIDENCE_NEXT_EPIC` through the normal BERADA transition guards.
+- Only if the scan reveals no plausible meaningful follow-on work at all may BERADA later conclude terminal `NO_EPICS`.
 
 ### Low-confidence next-epic clarification protocol
 
@@ -400,6 +403,7 @@ If a state file conflicts with this root file, this root file wins.
 - If `BERADA` cannot create tasks immediately, it must research before entering `NIKTO`.
 - If no epic exists, BERADA must attempt no-epics recovery and epic seeding before entering `NIKTO`.
 - If an epic just completed, BERADA must run a post-completion continuation scan before entering `NIKTO`.
+- `NO_EPICS` and `LOW_CONFIDENCE_NEXT_EPIC` are mutually exclusive terminal reasons: use `NO_EPICS` only for true completion/quiescence, and use `LOW_CONFIDENCE_NEXT_EPIC` whenever plausible meaningful follow-on work remains but the next bounded epic is not yet justified.
 - If `NIKTO_REASON` is `LOW_CONFIDENCE_NEXT_EPIC`, Gort must use the bounded clarification protocol and transition back to `BERADA` as soon as enough information exists for one bounded next epic or ticket.
 - If any command fails, it must be classified and routed before the loop continues or terminates.
 - The machine does not stop to report progress. It runs until terminal entry.

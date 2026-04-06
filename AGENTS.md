@@ -31,6 +31,9 @@ This repository contains the shared Gort prompt pack and supporting documentatio
 - When behavior and instructions diverge, align Gort with the user's operational goal rather than preserving a broken prior wording.
 - Treat prompt-pack edits as experiments: record what failed, what changed, and what evidence shows improvement in `gort.citations.md`.
 - When local repo evidence is not enough to justify a Gort behavior change, do targeted web research on the interaction pattern you are proposing and cite it in `gort.citations.md` rather than relying on taste alone.
+- If the user expresses a design preference or proposed fix, treat that as a hypothesis to test rather than a conclusion to adopt. Perform at least one explicit adversarial research pass that looks for reasons the preference may be suboptimal, over-broad, or unsafe.
+- After that adversarial pass, summarize any objective pushback calmly and succinctly before recommending a change. If the evidence supports a narrower or different rule than the user's preferred framing, prefer the evidence-backed correction and say so plainly.
+- Do not preserve the user's exact framing when a smaller, more objective correction is better supported. Prefer the best supported rule, then explain why it differs.
 - Avoid broad persona inflation or stylistic churn; improve reasoning quality through clearer rules, recovery paths, and verification gates.
 - Be especially conservative about terminal states, autonomous recovery, resume behavior, and anything that can cause Gort to stop instead of continuing.
 - Keep Gort prompt entrypoints stable and state-agnostic; transient execution state should be recovered from external runtime sources, not embedded in reinjected prompt text.

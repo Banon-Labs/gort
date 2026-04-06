@@ -797,3 +797,20 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - The smoke evidence narrows the rule further: after grounding, normal startup sometimes needs visible tool rows for real work, but it should never emit free-form assistant narration until the next complete `STATE:` block is ready.
 - Anthropic's guidance supports making the control contract concrete at the exact failure boundary instead of relying on broad stylistic bans.
 - Together these sources justify an exact sequencing repair: after the two grounding reads on normal startup, only tool actions may appear until the next real `STATE:` block.
+
+## 2026-04-05 — make `NO_EPICS` exclusive with low-confidence follow-on ambiguity
+
+### Local evidence
+
+- Fresh repo reads in [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md), and [`./states/nikto.md`](./states/nikto.md) showed the ambiguity at the terminal boundary: the root rule allowed terminal `NO_EPICS` when BERADA "still cannot infer a credible next epic," while the state files separately described cases where meaningful follow-on work may still exist but the next epic is not yet justified.
+- That wording allowed a user-visible `NO_EPICS` stop to coexist with "possible more work" language, because "cannot infer a credible next epic" can mean either true quiescence or unresolved next-step ambiguity.
+- Updated prompt files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md), [`./states/nikto.md`](./states/nikto.md)
+- Related `bd` issue trail: `gort-q5k`
+- Fresh tmux smoke artifact for the repaired semantics: `/tmp/gort-terminal-semantics-20260405T165356/final.ansi.txt`
+- In that smoke, a fresh Pi session answered the two target cases as `A => NO_EPICS | recovery and continuation found no open tasks or credible meaningful follow-on work` and `B => LOW_CONFIDENCE_NEXT_EPIC | meaningful follow-on may exist, but the next bounded epic is not yet justified without clarification or stronger evidence`.
+
+### Why this evidence supports the repair
+
+- The repo-text evidence isolated the bug at the exact state-machine boundary: terminal `NO_EPICS` depended on not inferring a "credible next epic" rather than on ruling out any plausible meaningful follow-on work.
+- The repair makes the terminal reasons mutually exclusive across the root file and state files: BERADA now classifies plausible-but-unjustified follow-on work into `LOW_CONFIDENCE_NEXT_EPIC`, and NIKTO explicitly forbids `NO_EPICS` summaries from speculating about possible next work.
+- The fresh tmux smoke shows the revised prompt pack now maps the user's two target cases to the intended terminal reasons, which is the behavior this edit set was meant to enforce.

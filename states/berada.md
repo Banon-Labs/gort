@@ -21,11 +21,13 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
    - during that first-epic seeding path, suppress visible thoughts or headings such as `Considering database tasks`, `Planning project structure`, and `Creating issues for transition`
    - do not run generic help commands such as `bd --help`, `bd create --help`, `bd update --help`, `bd epic --help`, `bd show --help`, or `bd children --help` merely to remember standard create/claim/show flows already specified by the controller
    - if the repo is truly quiescent after those checks, keep `EPIC: NONE` and continue to transition evaluation
+   - do not call the repo quiescent if plausible meaningful follow-on work still exists but the next bounded epic is not yet justified; that case must route through `LOW_CONFIDENCE_NEXT_EPIC`, not `NO_EPICS`
 4. If the current or immediately preceding loop just completed meaningful durable work, run **POST-COMPLETION CONTINUATION SCAN** before allowing terminal `NIKTO`:
    - inspect the most recent closed issues, recent commits, validation results, fresh `git status --short` or diff evidence, nearby repo docs, and the latest explicit user goal or durable session notes
    - look specifically for concrete follow-on work directly exposed by the completed change: regression protection, missing validation, cleanup needed to stabilize the result, docs or config updates needed to preserve the behavior, or adjacent hardening with a clear risk-reduction link
    - create exactly one follow-on epic only when the evidence supports a concrete next step with clear acceptance criteria
    - if only speculative or preference-dependent ideas remain, do not invent work; continue to transition evaluation so terminal handling can distinguish true quiescence from low-confidence next-step ambiguity
+   - classify the result explicitly: no plausible meaningful follow-on work => quiescence candidate; plausible follow-on work with unresolved justification => `LOW_CONFIDENCE_NEXT_EPIC`
 5. Determine why `KLAATU` cannot continue:
    - missing child tasks
    - task too large
@@ -39,12 +41,14 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
    - no current epic or no seeded epic yet
    - no concrete next epic can be justified with high confidence
 6. If the only blocker is low confidence about the next epic:
+   - treat this as the branch for cases where meaningful follow-on work still plausibly exists, but the next bounded epic cannot yet be justified with the current evidence
    - prepare a concise normalized summary of resolved facts, unresolved must-have stakeholder decisions, and delegated evidence questions
    - classify each unresolved item before asking anything else:
      - stakeholder decision → may require one focused user question
      - factual / ecosystem / implementation-order uncertainty → convert into research or decomposition work
    - if enough information already exists to define one bounded epic and the remaining uncertainty can be turned into child research or decomposition tasks, create that epic now instead of handing off to `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`
-   - only hand off to `LOW_CONFIDENCE_NEXT_EPIC` when a true stakeholder decision still blocks the next bounded epic
+   - do not hand off to `NO_EPICS` while that plausible follow-on branch still exists
+   - only hand off to `LOW_CONFIDENCE_NEXT_EPIC` when a true stakeholder decision or evidence gap still blocks the next bounded epic
 8. If user-visible validation requires explicit approval of captures or other artifacts, create or preserve a long-lived acceptance parent for that outcome. Keep that parent open until explicit approval, and allow narrower child tasks to close independently.
 9. Repair task-tree structure now when open work remains but `bd ready --json --limit 100` is empty:
    - separate acceptance gating from executable child work
@@ -82,5 +86,5 @@ Evaluate after each cycle. Transition immediately on the first match:
 - POST-COMPLETION CONTINUATION SCAN created a follow-on epic that still needs decomposition → remain in `BERADA` on that epic, reset LOOP
 - current epic is fully complete → advance to next epic, reset LOOP
 - no further task creation or decomposition is possible because of a confirmed external blocker BERADA cannot reduce → transition to `NIKTO`
-- no epics remain only after NO-EPICS RECOVERY and POST-COMPLETION CONTINUATION SCAN found no credible next epic and repo quiescence was confirmed → transition to `NIKTO`
+- no epics remain only after NO-EPICS RECOVERY and POST-COMPLETION CONTINUATION SCAN found no plausible unfinished meaningful work or credible follow-on epic, repo quiescence was confirmed, and no unresolved next-step ambiguity remains → transition to `NIKTO` with `NIKTO_REASON: NO_EPICS`
 - meaningful opportunities may remain, but no concrete next epic can be justified without subjective guidance or confidence beyond local evidence → transition to `NIKTO` with `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`, carrying the normalized summary and smallest unresolved decision into the clarification protocol
