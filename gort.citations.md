@@ -879,3 +879,21 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - The repo-text evidence isolated the bug at the exact state-machine boundary: terminal `NO_EPICS` depended on not inferring a "credible next epic" rather than on ruling out any plausible meaningful follow-on work.
 - The repair makes the terminal reasons mutually exclusive across the root file and state files: BERADA now classifies plausible-but-unjustified follow-on work into `LOW_CONFIDENCE_NEXT_EPIC`, and NIKTO explicitly forbids `NO_EPICS` summaries from speculating about possible next work.
 - The fresh tmux smoke shows the revised prompt pack now maps the user's two target cases to the intended terminal reasons, which is the behavior this edit set was meant to enforce.
+
+## 2026-04-06 — document the prompt-only ceiling for autonomous visible-prose leakage
+
+### Local evidence
+
+- Existing repo guidance in [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md), and [`./EVALS.md`](./EVALS.md) already scoped this repository to Markdown-only prompt-pack changes and forbade patching Pi.dev runtime code from here, but the boundary was still implicit when evaluating lingering non-`STATE:` prose leakage.
+- A fresh Kitty/Pi smoke rooted at `/home/choza/projects/gort` with the exact cue `KLAATU BERADA NIKTO` still leaked visible assistant narration during autonomous work after bootstrap. The ANSI-preserved capture shows headings `Considering task completion` and `Deciding on code commitment` before the next structured block, despite the prompt pack already forbidding that class of prose; artifact: `/tmp/gort-output-live-49-late.txt`.
+- The same smoke session log confirms normal startup used `bd prime`, so the remaining failure was not the old onboarding-detour bug but residual runtime-visible narration after prompt-pack compliance had already been tightened; artifact: `/tmp/pi-kitty-smoke-gort-20260405T221519/sessions/2026-04-06T05-15-26-865Z_b0381a35-47c0-40e5-b7ee-14c73d4d9c59.jsonl`.
+- That smoke also autonomously committed a docs-only boundary note (`3177a72`, `docs: document prompt-only ceiling`), showing the repo-level response that remains appropriate here: document the boundary and keep the eval/assertion explicit rather than inventing more speculative prompt churn.
+- Updated file: [`./README.md`](./README.md)
+- Related `bd` issue trail: `gort-5ld`, `gort-28d`
+
+### Why this evidence supports the repair
+
+- The repo already had the right architectural boundary; the missing piece was making that boundary explicit at the exact failure mode still tempting prompt-only churn.
+- The fresh smoke narrows the remaining bug: prompt-pack instructions can require `bd prime` and ban visible prose, yet the runtime surface may still reveal assistant narration between tool rows.
+- Naming the prompt-only ceiling in the public repo docs helps future edits distinguish between prompt-pack regressions that should be fixed here and runtime-enforcement gaps that should only be documented and handed off.
+- That keeps Gort's local responsibility concrete: preserve scenario-based smoke assertions for non-`STATE:` leakage, but do not pretend this repo can implement harness-level suppression when the evidence says the remaining fix is outside Markdown.

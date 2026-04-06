@@ -42,3 +42,7 @@ In short:
 Changes to `gort.md`, the state files, or compaction behavior must be backed by citations in `gort.citations.md`.
 
 This repository is intentionally Markdown-only prompt-pack scope. Do not use it to patch Pi.dev source code, watchers, subagents, or other runtime implementation. If a requested behavior would require source changes outside this prompt pack, document that limitation here or in `AGENTS.md` and keep this repo's changes inside Markdown prompt-pack/docs files.
+
+## Prompt-only ceiling
+
+Some failures observed in Kitty/Pi smokes — especially leaked non-`STATE:` assistant prose between tool rows during autonomous work — may reflect harness/runtime behavior rather than a missing prompt rule. In this repo, treat those traces as evidence to document, cite, and regression-test, not as permission to patch Pi.dev runtime code from the prompt-pack repo. When local evidence suggests the remaining fix lives outside Markdown, record the boundary here and in `gort.citations.md`, keep the Gort-side eval/assertion explicit, and hand the implementation follow-up to the owning runtime surface instead of inventing more prompt churn.
