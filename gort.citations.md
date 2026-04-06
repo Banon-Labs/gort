@@ -6,20 +6,19 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
-## 2026-04-06 — prefer inline artifact readback when citing milestone evidence
+## 2026-04-06 — keep inline artifact readback as operator habit, not durable Gort repo policy
 
 ### Local evidence
 
-- Recent Gort work used local artifact paths heavily for smoke proof and milestone reporting, especially Kitty/Pi captures under `/tmp`, but some updates cited only the path without first reading the artifact back inline in-session.
-- The user explicitly asked for a better workflow: when an artifact matters to a milestone, use the `read` tool on it so they can inspect the content inline instead of only receiving a filesystem path.
-- That request fits the way this repo already treats artifacts: local traces are the authoritative proof path, so reading back the decisive excerpt in-session makes the proof easier to verify without changing the underlying artifact or eval method.
-- Updated files: [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md)
+- A short-lived repo-doc change added inline artifact-readback guidance to [`./AGENTS.md`](./AGENTS.md) and [`./README.md`](./README.md).
+- The user then clarified the intended split: `gort.md` and `states/*.md` hold controller behavior, while `AGENTS.md` should stay focused on repo-level guidance and existing durable workflow constraints rather than accumulating every reporting preference.
+- The inline-readback idea improves chat ergonomics, but it does not change the Gort state machine, prompt-pack semantics, or the underlying artifact-capture/eval method already documented elsewhere.
+- Updated files: [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md), [`./gort.citations.md`](./gort.citations.md)
 
 ### Why this evidence supports the repair
 
-- The issue is local and procedural rather than theoretical: the repo already values artifact-backed proof, and the missing step was surfacing the proof inline at reporting time.
-- A narrow documentation update is enough here: prefer `read` for text-like artifacts, use inline image readback when supported, and excerpt large artifacts while still preserving the full path.
-- This keeps milestone reporting aligned with the repo's evidence-first workflow while making the user-facing proof easier to inspect immediately.
+- Keeping the readback preference as an operator habit is enough to preserve the UX improvement without turning it into extra durable repo policy.
+- Removing the new repo-level wording narrows scope, avoids policy sprawl, and keeps the repo docs centered on controller behavior and durable prompt-pack workflow rules.
 
 ## 2026-04-06 — repo-local eval harness guidance for objective Gort improvement
 
