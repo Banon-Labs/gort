@@ -36,6 +36,7 @@ In short:
 - keep a small scenario-based regression corpus built from real failures
 - include at least one adversarial or compatibility case when routing or terminal behavior changes
 - prefer local Gort-specific trace evals over generic public benchmarks when the two disagree
+- when citing milestone evidence from local artifacts, prefer reading the artifact back inline before referencing it so the user sees the path plus the supporting excerpt
 
 ## Editing rule
 

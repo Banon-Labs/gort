@@ -44,6 +44,14 @@ This repository contains the shared Gort prompt pack and supporting documentatio
 - If a requested behavior would require Pi.dev or extension source changes, document the limitation and boundary in `AGENTS.md` or `README.md` and keep the fix inside Markdown prompt-pack/docs files only.
 - When external frameworks or benchmarks are helpful, use them as reference material; the authoritative evals for this repo are still the local Kitty/Pi scenario traces described in `EVALS.md`.
 
+## Artifact readback for milestone reporting
+
+- When reporting a meaningful milestone, checkpoint, or smoke-test result that depends on a local artifact, prefer reading that artifact back in-session before citing it.
+- For text-like artifacts (`.txt`, `.md`, `.json`, ANSI captures, logs), use the `read` tool and quote the key lines that support the claim.
+- For images, use `read` on the image path when the harness can surface it inline as an attachment.
+- For large artifacts, read the relevant excerpt and still include the full artifact path.
+- Do not reference a local artifact path alone when a short inline readback would make the evidence easier for the user to inspect immediately.
+
 <!-- BEGIN BEADS INTEGRATION -->
 ## Issue Tracking with bd (beads)
 

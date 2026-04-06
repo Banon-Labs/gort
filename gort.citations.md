@@ -6,6 +6,21 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-06 — prefer inline artifact readback when citing milestone evidence
+
+### Local evidence
+
+- Recent Gort work used local artifact paths heavily for smoke proof and milestone reporting, especially Kitty/Pi captures under `/tmp`, but some updates cited only the path without first reading the artifact back inline in-session.
+- The user explicitly asked for a better workflow: when an artifact matters to a milestone, use the `read` tool on it so they can inspect the content inline instead of only receiving a filesystem path.
+- That request fits the way this repo already treats artifacts: local traces are the authoritative proof path, so reading back the decisive excerpt in-session makes the proof easier to verify without changing the underlying artifact or eval method.
+- Updated files: [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md)
+
+### Why this evidence supports the repair
+
+- The issue is local and procedural rather than theoretical: the repo already values artifact-backed proof, and the missing step was surfacing the proof inline at reporting time.
+- A narrow documentation update is enough here: prefer `read` for text-like artifacts, use inline image readback when supported, and excerpt large artifacts while still preserving the full path.
+- This keeps milestone reporting aligned with the repo's evidence-first workflow while making the user-facing proof easier to inspect immediately.
+
 ## 2026-04-06 — repo-local eval harness guidance for objective Gort improvement
 
 ### Local evidence
