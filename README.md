@@ -25,6 +25,18 @@ python3 scripts/check_markdown_duplicates.py
 
 The checker fails on accidental adjacent duplicate non-empty Markdown lines outside fenced code blocks.
 
+## Evaluation strategy
+
+Use [`./EVALS.md`](./EVALS.md) as the concrete regression/eval guide for Gort changes.
+
+In short:
+
+- validate Gort on the real Kitty/Pi runtime surface
+- treat prompt rules as checkable trace assertions, not just prose preferences
+- keep a small scenario-based regression corpus built from real failures
+- include at least one adversarial or compatibility case when routing or terminal behavior changes
+- prefer local Gort-specific trace evals over generic public benchmarks when the two disagree
+
 ## Editing rule
 
 Changes to `gort.md`, the state files, or compaction behavior must be backed by citations in `gort.citations.md`.

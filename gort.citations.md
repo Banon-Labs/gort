@@ -6,6 +6,28 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-06 — repo-local eval harness guidance for objective Gort improvement
+
+### Local evidence
+
+- The repo already had strong smoke-test primitives in Kitty (`/home/choza/projects/scripts/pi-kitty-smoke.sh` and `/home/choza/projects/scripts/kitty-orchestrate.sh`), but no single documented evaluation strategy that turned real Gort failures into a stable scenario-based regression corpus.
+- Recent Gort work repeatedly depended on concrete runtime scenarios rather than abstract prompt review alone, including blocked-frontier recovery in cuneiform and prior startup/output-invariant regressions.
+- The user explicitly asked for a more objective way to avoid "making a bad agent" while staying within the Markdown-only prompt-pack boundary.
+- Updated files: [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md), [`./EVALS.md`](./EVALS.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [Inspect Evals](https://inspect.aisi.org.uk/evals/)
+- [Microsoft Research — Agent-Pex](https://www.microsoft.com/en-us/research/project/agent-pex-automated-evaluation-and-testing-of-ai-agents/)
+
+### Why these sources support the repair
+
+- Anthropic's context-engineering guidance emphasizes curating the smallest high-signal evidence and validating behavior on the actual runtime surface, which fits Gort's need for Kitty/Pi trace-based evaluation.
+- Inspect Evals supports the idea of keeping a reusable evaluation substrate and benchmark library, which maps well to a repo-local scenario corpus for Gort.
+- Agent-Pex supports treating prompts and traces as sources of checkable rules rather than relying on subjective judgment alone.
+- Together with the local evidence, these sources justify documenting a Gort-specific eval harness strategy: real Kitty/Pi smoke traces, scenario-based regression cases, explicit trace assertions, and adversarial/compatibility cases, all within the prompt-pack/docs boundary.
+
 ## 2026-04-06 — blocked-frontier fresh-session recovery before terminal `EXTERNAL_BLOCKER`
 
 ### Local evidence

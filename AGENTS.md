@@ -28,6 +28,9 @@ This repository contains the shared Gort prompt pack and supporting documentatio
 - Prefer the minimum change set that can plausibly fix the observed behavior while preserving existing invariants.
 - Define the user goal and pass/fail criteria before changing prompts or state-machine files.
 - Favor provable results over speculative elegance: validate with local evidence, diffs, and interactive Kitty/Pi smoke tests using the exact reinjection flow the user cares about.
+- Treat prompt rules as checkable specifications. Prefer trace assertions over subjective "felt better" judgments.
+- Use the scenario-based regression guidance in `EVALS.md` when evaluating Gort changes, and expand that scenario corpus when a new real failure mode is discovered.
+- For routing, terminal-state, resume, or bootstrap changes, include at least one adversarial or compatibility case in addition to the primary happy-path smoke.
 - When behavior and instructions diverge, align Gort with the user's operational goal rather than preserving a broken prior wording.
 - Treat prompt-pack edits as experiments: record what failed, what changed, and what evidence shows improvement in `gort.citations.md`.
 - When local repo evidence is not enough to justify a Gort behavior change, do targeted web research on the interaction pattern you are proposing and cite it in `gort.citations.md` rather than relying on taste alone.
@@ -39,6 +42,7 @@ This repository contains the shared Gort prompt pack and supporting documentatio
 - Keep Gort prompt entrypoints stable and state-agnostic; transient execution state should be recovered from external runtime sources, not embedded in reinjected prompt text.
 - Treat this repository as a prompt-pack/documentation boundary: do not change Pi.dev source code, watchers, subagents, or extension/runtime implementation from here.
 - If a requested behavior would require Pi.dev or extension source changes, document the limitation and boundary in `AGENTS.md` or `README.md` and keep the fix inside Markdown prompt-pack/docs files only.
+- When external frameworks or benchmarks are helpful, use them as reference material; the authoritative evals for this repo are still the local Kitty/Pi scenario traces described in `EVALS.md`.
 
 <!-- BEGIN BEADS INTEGRATION -->
 ## Issue Tracking with bd (beads)
