@@ -16,7 +16,10 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
    - do not inspect shared Gort controller files (`/home/choza/projects/gort/gort.md`, `gort.citations.md`, `context-compaction.md`, or `states/*.md`) as evidence for what the target repo should do next; use repo/runtime evidence instead
    - ignore pure runtime noise unless it is itself the bug under investigation, including `.gort/`, `.beads/push-state.json`, capture bundles, caches, logs, and other generated artifacts
    - if the open-task check reveals one clear blocked frontier, recover `CURRENT_EPIC` from that existing frontier, keep working under it, and do not seed a duplicate replacement epic just because the frontier is currently blocked
-   - if the evidence reveals unfinished or next-highest-value work beyond any recovered blocked frontier, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
+   - if the evidence reveals unfinished or next-highest-value work beyond any recovered blocked frontier, prefer creating exactly one bounded next epic plus the first create-ready child tasks needed to resume execution
+   - escalate to a parent roadmap epic plus adjacent child epics/tasks only when the same durable evidence already justifies multiple near-term workstreams with a shared acceptance narrative, clear ordering, and at least one child that is create-ready right now
+   - when roadmap seeding is justified, create only the parent and the adjacent create-ready child epics/tasks supported by current evidence; leave distant or speculative branches uncreated
+   - attach roadmap children to the roadmap parent with parent-child decomposition relations, not with task→epic blocker links
    - when the repo is fresh or nearly empty and the user has already supplied a concrete product target, seed the first epic and first executable child directly instead of browsing generic command help or rediscovering standard `bd` operations
    - do not emit interim worklog narration such as `Inspecting task status`, `Exploring recent commits`, or similar prose while gathering that evidence; inspect silently and speak only with the next complete structured state block
    - during that first-epic seeding path, suppress visible thoughts or headings such as `Considering database tasks`, `Planning project structure`, and `Creating issues for transition`
@@ -26,7 +29,9 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
 4. If the current or immediately preceding loop just completed meaningful durable work, run **POST-COMPLETION CONTINUATION SCAN** before allowing terminal `NIKTO`:
    - inspect the most recent closed issues, recent commits, validation results, fresh `git status --short` or diff evidence, nearby repo docs, and the latest explicit user goal or durable session notes
    - look specifically for concrete follow-on work directly exposed by the completed change: regression protection, missing validation, cleanup needed to stabilize the result, docs or config updates needed to preserve the behavior, or adjacent hardening with a clear risk-reduction link
-   - create exactly one follow-on epic only when the evidence supports a concrete next step with clear acceptance criteria
+   - create exactly one follow-on epic when the evidence supports one concrete next step with clear acceptance criteria
+   - if the same completed transition simultaneously exposes multiple concrete near-term follow-ons with shared acceptance context and clear ordering, seed one parent roadmap epic plus only the adjacent child epics/tasks that are already justified and create-ready
+   - use parent-child decomposition to attach those children beneath the roadmap parent; add `blocks` relations only for real execution sequencing between executable leaves
    - if only speculative or preference-dependent ideas remain, do not invent work; continue to transition evaluation so terminal handling can distinguish true quiescence from low-confidence next-step ambiguity
    - classify the result explicitly: no plausible meaningful follow-on work => quiescence candidate; plausible follow-on work with unresolved justification => `LOW_CONFIDENCE_NEXT_EPIC`
 5. Determine why `KLAATU` cannot continue:

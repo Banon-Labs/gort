@@ -28,6 +28,28 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - Agent-Pex supports treating prompts and traces as sources of checkable rules rather than relying on subjective judgment alone.
 - Together with the local evidence, these sources justify documenting a Gort-specific eval harness strategy: real Kitty/Pi smoke traces, scenario-based regression cases, explicit trace assertions, and adversarial/compatibility cases, all within the prompt-pack/docs boundary.
 
+## 2026-04-06 — BERADA roadmap seeding should require shared evidence and parent-child attachment
+
+### Local evidence
+
+- The current `NO_EPICS` recovery and post-completion continuation rules in [`./gort.md`](./gort.md) and [`./states/berada.md`](./states/berada.md) already distinguished true quiescence from low-confidence ambiguity, but they still defaulted to creating exactly one follow-on epic even when one completed transition could justify a small roadmap of adjacent next steps.
+- Fresh workspace sandbox smoke rooted at `/home/choza/projects/gort-roadmap-sandbox-repo` with the exact cue `KLAATU BERADA NIKTO` created a roadmap epic plus adjacent follow-on issues from one completed report-export transition, but the first version tried invalid task→epic blocker links and reported the grouping as merely descriptive; artifact: `/tmp/gort-roadmap-ws-smoke-20260405T214219/prompt-after.txt`.
+- After tightening the prompt to require parent-child attachment for roadmap children, a second fresh workspace sandbox smoke rooted at `/home/choza/projects/gort-roadmap-sandbox-repo-2` with the same exact cue `KLAATU BERADA NIKTO` created a roadmap epic and attached child issues with `parent-child` relations; artifact: `/tmp/gort-roadmap-ws-smoke2-20260405T214824/prompt-after.txt`.
+- The second sandbox repo's resulting Beads state confirms the structure directly: parent epic `gort-roadmap-sandbox-repo-2-nhe` with child issue `gort-roadmap-sandbox-repo-2-nhe.3` and `dependency_type: parent-child`.
+- Repo-local evaluation guidance in [`./EVALS.md`](./EVALS.md) now includes a dedicated roadmap-seeding scenario so this decision can be checked against Kitty/Pi traces instead of taste.
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md), [`./EVALS.md`](./EVALS.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [Microsoft Research — Agent-Pex](https://www.microsoft.com/en-us/research/project/agent-pex-automated-evaluation-and-testing-of-ai-agents/)
+
+### Why these sources support the repair
+
+- Anthropic's guidance supports keeping agent instructions tied to the minimum high-signal evidence needed for the next action; that favors a one-epic default and only escalating to roadmap seeding when the same evidence simultaneously supports multiple adjacent workstreams.
+- Agent-Pex supports turning that policy into explicit eval assertions about trace behavior and issue structure rather than an aesthetic planning preference.
+- Together with the sandbox smoke evidence, these sources justify a narrow roadmap-seeding rule: one bounded epic by default, roadmap parent plus adjacent create-ready children only when shared evidence, ordering, and immediate executability are already present, and those children must be attached with parent-child decomposition rather than invalid blocker links.
+
 ## 2026-04-06 — blocked-frontier fresh-session recovery before terminal `EXTERNAL_BLOCKER`
 
 ### Local evidence

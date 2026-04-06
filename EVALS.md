@@ -118,6 +118,7 @@ Keep using and expanding a small regression corpus built from real failures.
 - Assert:
   - BERADA defaults to one bounded follow-on epic unless multiple near-term workstreams are simultaneously justified
   - when roadmap seeding is justified, the controller creates one parent roadmap epic plus only adjacent create-ready child epics/tasks
+  - those roadmap children are attached with parent-child decomposition rather than invalid task→epic blocker links
   - no speculative distant branches are created merely because more work is imaginable
 
 ## Public research to mirror locally

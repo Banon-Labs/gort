@@ -225,12 +225,15 @@ Consistency rules:
 - Recovery action: re-enter `BERADA` with `CURRENT_EPIC=NONE` and `LOOP=1`, then run the no-epics recovery steps in [states/berada.md](./states/berada.md).
 - A repo is only quiescent enough for terminal `NO_EPICS` when Beads shows no open work, there is no durable local evidence of unfinished meaningful work that should become a new epic, and no unresolved next-step ambiguity remains that would route through `LOW_CONFIDENCE_NEXT_EPIC`.
 - Mutual-exclusion rule: if the terminal summary still needs to mention plausible meaningful follow-on work, a smallest remaining decision, or uncertainty about whether another bounded epic should exist, the reason may not be `NO_EPICS`; route through `LOW_CONFIDENCE_NEXT_EPIC` instead.
+- Roadmap-seeding rule: when no current epic exists, prefer creating one bounded next epic by default. Escalate to a parent roadmap epic plus adjacent child epics/tasks only when the same durable evidence simultaneously justifies multiple near-term workstreams with a shared acceptance narrative, clear ordering, and at least one create-ready child immediately.
+- Roadmap guardrail: do not create umbrella/roadmap structure for distant, speculative, or merely possible follow-ons; if only one next step is well-supported, create only that one next epic.
 
 ### Post-completion continuation scan
 
 - If the current epic was just completed, or the current session just produced durable code / validation / artifact changes, BERADA must run a fresh follow-on opportunity scan before allowing terminal `NIKTO`.
 - The scan must inspect the most recent closed issues, recent commits, recent validation results, fresh `git status --short` / diff evidence, nearby repo instructions or docs, and the latest explicit user goal or durable session notes for concrete next-step signals.
 - Prefer evidence-backed follow-ons such as regression protection, cleanup required to stabilize the new behavior, missing validation exposed by the completed work, docs or config updates needed to make the result durable, and adjacent hardening that directly reduces risk from the just-finished change.
+- Default to seeding one bounded follow-on epic. Seed a roadmap parent with adjacent child epics/tasks only when the completed transition exposes multiple concrete, near-term follow-ons that are all already justified by the same evidence and at least one child is immediately create-ready.
 - Do **not** create speculative epics based only on vague "could improve" ideas.
 - If the scan reveals plausible meaningful follow-on work but not enough confidence to justify one bounded epic yet, route to `LOW_CONFIDENCE_NEXT_EPIC` through the normal BERADA transition guards.
 - Only if the scan reveals no plausible meaningful follow-on work at all may BERADA later conclude terminal `NO_EPICS`.
