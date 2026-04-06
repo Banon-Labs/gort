@@ -28,7 +28,7 @@ Enter `NIKTO` only when one of these is true:
 | 2 | Permanent error | `PERMANENT_ERROR: <detail>` |
 | 3 | `bd` unavailable after 8 classified transient retries | `BD_UNAVAILABLE` |
 | 4 | LOOP exceeded 10 in one state without progress | `LOOP_EXCEEDED: <state>` |
-| 5 | All remaining work blocked by a confirmed external blocker that BERADA cannot reduce | `EXTERNAL_BLOCKER: <detail>` |
+| 5 | All remaining work blocked by a confirmed external blocker that BERADA cannot reduce after the required blocked-frontier freshness / reduction pass | `EXTERNAL_BLOCKER: <detail>` |
 | 6 | Meaningful follow-on work may exist, but no concrete next epic can be justified without subjective guidance or higher-confidence evidence | `LOW_CONFIDENCE_NEXT_EPIC` |
 
 ## Terminal reason exclusivity
@@ -105,6 +105,7 @@ Never enter `NIKTO` because:
 - all Beads issues are closed but durable local work still needs to be converted into a new epic
 - a stale `STATE: NIKTO | ... | NIKTO_REASON: NO_EPICS` snapshot was merely resumed at session start
 - an epic just completed, but BERADA has not yet run the post-completion continuation scan
+- a fresh session recovered only a blocked Beads frontier, but BERADA has not yet run the required blocker freshness / reduction pass for that frontier
 - enough information already exists to define one bounded next epic or ticket, but the clarification protocol has not yet transitioned back to `BERADA`
 - the remaining uncertainty is factual or researchable and has already been delegated to evidence, but the protocol has not yet converted it into research or child tasks
 - a command failed before classification and TRIAGE routing was attempted

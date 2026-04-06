@@ -5,9 +5,9 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
 ## Execution cycle
 
 1. Run `bd ready --json --limit 100`.
-2. Inspect the current epic tree, current blockers, whether a current epic actually exists, and whether the current or immediately preceding loop just completed meaningful durable work.
+2. Inspect the current epic tree, current blockers, whether a current epic actually exists, whether the current or immediately preceding loop just completed meaningful durable work, and whether the current session is recovering without usable window-local runtime state.
 3. If no current epic exists, run **NO-EPICS RECOVERY** before allowing terminal `NIKTO`:
-   - confirm `bd ready --json --limit 100` is empty and perform an authoritative open-task check
+   - confirm `bd ready --json --limit 100` is empty and perform an authoritative open-task check that inspects open / blocked issues, their dependency shape, and whether one blocked frontier still clearly defines the current workstream
    - inspect durable local evidence for the next logical workstream, in this order:
      1. window-local Gort runtime state under `$GORT_ROOT/.gort/`
      2. tracked source / docs / config changes from `git status --short`
@@ -15,7 +15,8 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
      4. the latest explicit user goal and any durable session notes already available locally
    - do not inspect shared Gort controller files (`/home/choza/projects/gort/gort.md`, `gort.citations.md`, `context-compaction.md`, or `states/*.md`) as evidence for what the target repo should do next; use repo/runtime evidence instead
    - ignore pure runtime noise unless it is itself the bug under investigation, including `.gort/`, `.beads/push-state.json`, capture bundles, caches, logs, and other generated artifacts
-   - if the evidence reveals unfinished or next-highest-value work, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
+   - if the open-task check reveals one clear blocked frontier, recover `CURRENT_EPIC` from that existing frontier, keep working under it, and do not seed a duplicate replacement epic just because the frontier is currently blocked
+   - if the evidence reveals unfinished or next-highest-value work beyond any recovered blocked frontier, create exactly one epic for that work plus the first create-ready child tasks needed to resume execution
    - when the repo is fresh or nearly empty and the user has already supplied a concrete product target, seed the first epic and first executable child directly instead of browsing generic command help or rediscovering standard `bd` operations
    - do not emit interim worklog narration such as `Inspecting task status`, `Exploring recent commits`, or similar prose while gathering that evidence; inspect silently and speak only with the next complete structured state block
    - during that first-epic seeding path, suppress visible thoughts or headings such as `Considering database tasks`, `Planning project structure`, and `Creating issues for transition`
@@ -49,6 +50,13 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
    - if enough information already exists to define one bounded epic and the remaining uncertainty can be turned into child research or decomposition tasks, create that epic now instead of handing off to `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`
    - do not hand off to `NO_EPICS` while that plausible follow-on branch still exists
    - only hand off to `LOW_CONFIDENCE_NEXT_EPIC` when a true stakeholder decision or evidence gap still blocks the next bounded epic
+7. If ready work is empty but open blocked work remains:
+   - recover or keep `CURRENT_EPIC` from the clearest still-open blocked frontier rather than leaving the machine at `EPIC: NONE`
+   - on a fresh session, or whenever window-local runtime state is missing, stale, or invalid, run exactly one bounded blocker freshness / reduction pass before allowing `NIKTO_REASON: EXTERNAL_BLOCKER`
+   - inspect the freshest blocker evidence first: issue notes/comments/timestamps, dependency shape, recent commits or validation artifacts, and repo-local instructions about researching under uncertainty or rechecking external facts
+   - rerun the cheapest truthful local probe, repo-specific verification step, or research pass that could show the blocker is stale, partially reduced, or workaroundable
+   - if that pass reveals a narrower reducer task, research task, decomposition step, or durable blocker-update action, create or update that work instead of parking in `NIKTO`
+   - only when the blocker remains externally confirmed after that bounded pass, and BERADA still cannot create any reducer task or decomposition, may terminal `EXTERNAL_BLOCKER` handling proceed
 8. If user-visible validation requires explicit approval of captures or other artifacts, create or preserve a long-lived acceptance parent for that outcome. Keep that parent open until explicit approval, and allow narrower child tasks to close independently.
 9. Repair task-tree structure now when open work remains but `bd ready --json --limit 100` is empty:
    - separate acceptance gating from executable child work
@@ -85,6 +93,6 @@ Evaluate after each cycle. Transition immediately on the first match:
 - POST-COMPLETION CONTINUATION SCAN created a follow-on epic with ready work → transition to `KLAATU`, reset LOOP
 - POST-COMPLETION CONTINUATION SCAN created a follow-on epic that still needs decomposition → remain in `BERADA` on that epic, reset LOOP
 - current epic is fully complete → advance to next epic, reset LOOP
-- no further task creation or decomposition is possible because of a confirmed external blocker BERADA cannot reduce → transition to `NIKTO`
+- no further task creation or decomposition is possible because of a confirmed external blocker BERADA cannot reduce after the required blocked-frontier freshness / reduction pass → transition to `NIKTO`
 - no epics remain only after NO-EPICS RECOVERY and POST-COMPLETION CONTINUATION SCAN found no plausible unfinished meaningful work or credible follow-on epic, repo quiescence was confirmed, and no unresolved next-step ambiguity remains → transition to `NIKTO` with `NIKTO_REASON: NO_EPICS`
 - meaningful opportunities may remain, but no concrete next epic can be justified without subjective guidance or confidence beyond local evidence → transition to `NIKTO` with `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`, carrying the normalized summary and smallest unresolved decision into the clarification protocol

@@ -6,6 +6,27 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-06 — blocked-frontier fresh-session recovery before terminal `EXTERNAL_BLOCKER`
+
+### Local evidence
+
+- Fresh cuneiform inspection before the fix showed no resumable runtime state (`/home/choza/projects/cuneiform/.gort` absent), `bd ready --json` returning `[]`, `bd list --status in_progress --json` returning `[]`, and only blocked frontier issues remaining under `cuneiform-dfy` / `cuneiform-4e6` / `cuneiform-34m`.
+- A live cuneiform Pi reinjection with the exact phrase `KLAATU BARATA NIKTO` ended immediately in terminal `NIKTO_REASON: EXTERNAL_BLOCKER` without rechecking the blocker; artifact: `/tmp/cuneiform-reinject-20260405T194539/after.txt`.
+- After the prompt-pack repair, reinjecting the same live cuneiform Pi session with the same exact phrase reran a blocker freshness pass, narrowed the blocker from broad ORACC/CDLI uncertainty to specific ORACC structured-source failures, and only then emitted terminal `EXTERNAL_BLOCKER`; artifact: `/tmp/cuneiform-postfix-reinject-20260405T195529/after.txt`.
+- Fresh-session validation in a new Kitty Pi tab rooted at `/home/choza/projects/cuneiform` with the same exact phrase `KLAATU BARATA NIKTO` no longer parked immediately. Instead it resumed blocked-frontier work, updated blocker notes, created follow-on Beads work (`cuneiform-rb6`), and remained actively working; artifact: `/tmp/cuneiform-manual-fresh-20260405T195914/prompt-after.txt`.
+- The user explicitly set a repo boundary: fixes here must stay in Markdown prompt-pack/docs scope rather than Pi.dev source changes, so repo instructions were updated to document that limitation in `AGENTS.md` and `README.md`.
+- Updated files: [`./gort.md`](./gort.md), [`./states/berada.md`](./states/berada.md), [`./states/nikto.md`](./states/nikto.md), [`./AGENTS.md`](./AGENTS.md), [`./README.md`](./README.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+
+### Why these sources support the repair
+
+- The local evidence isolated the failure mode: when fresh-session runtime state was missing and Beads exposed only a blocked frontier, the controller jumped straight to terminal `EXTERNAL_BLOCKER` instead of doing any bounded blocker-reduction work.
+- Anthropic's context-engineering guidance supports making the missing recovery rule explicit in the prompt contract rather than relying on hidden continuation state or out-of-repo runtime/source changes.
+- Together these support a narrow repair: recover the blocked frontier from Beads when no runtime state exists, require one bounded blocker freshness/reduction pass before terminal `EXTERNAL_BLOCKER`, and document the prompt-pack-only boundary so future fixes do not drift into Pi.dev source changes.
+
 ## 2026-04-05 — remove tmux/screen-threshold compaction rules and switch handoff automation to kitty
 
 ### Local evidence

@@ -28,3 +28,5 @@ The checker fails on accidental adjacent duplicate non-empty Markdown lines outs
 ## Editing rule
 
 Changes to `gort.md`, the state files, or compaction behavior must be backed by citations in `gort.citations.md`.
+
+This repository is intentionally Markdown-only prompt-pack scope. Do not use it to patch Pi.dev source code, watchers, subagents, or other runtime implementation. If a requested behavior would require source changes outside this prompt pack, document that limitation here or in `AGENTS.md` and keep this repo's changes inside Markdown prompt-pack/docs files.

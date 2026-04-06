@@ -215,7 +215,8 @@ Consistency rules:
 - Use prompt text only to locate and load the Gort instructions. Recover transient execution state from external sources described by those instructions.
 - On session start or after compaction, check for window-local runtime state under `$GORT_ROOT/.gort/` using the current kitty window identity (`KITTY_WINDOW_ID`) and restore the last known machine position from there when available.
 - Treat `bd` state and the current issue tree as the authority for current work structure. Treat the window-local runtime state file as the authority for the last known controller position.
-- If external runtime state is missing, stale, or invalid, recover from `bd ready --json --limit 100` and continue under the normal state-transition rules.
+- If external runtime state is missing, stale, or invalid, start with `bd ready --json --limit 100`, then run the same authoritative open-task / blocked-frontier checks required by `BERADA` before inferring quiescence or terminal stop conditions.
+- If ready work is empty but open blocked work still defines one clear current frontier, recover `CURRENT_EPIC` from that frontier and continue in `BERADA` instead of treating the repo as terminal by default.
 
 ### No-epics recovery
 
