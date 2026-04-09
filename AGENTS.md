@@ -8,41 +8,22 @@ This repository contains the shared Gort prompt pack and supporting documentatio
 - This repository is **not** the default execution root for work happening in another repository.
 - Consumer repositories should keep their own repo-root `AGENTS.md` authoritative and delegate here only for shared Gort controller logic.
 
-## Entry-point rule
+## Instruction split
+
+Use the split guidance below instead of mixing consumer/read-only and maintainer/write instructions in one long file.
+
+- **Using Gort from another repository (read-only / consumer mode):** [`./docs/using-gort-readonly.md`](./docs/using-gort-readonly.md)
+- **Editing Gort in this repository (write / maintainer mode):** [`./docs/editing-gort-write.md`](./docs/editing-gort-write.md)
+
+If the current task is to modify files in `/home/choza/projects/gort`, read the write/maintainer guide. If this repo is only being loaded as shared controller logic while work continues somewhere else, read the read-only/consumer guide.
+
+## Repo-wide invariants
 
 - When Gort is used from another repository, prefer the exact reinjection cue `KLAATU BERADA NIKTO` from that active repository.
 - Only reinject directly into `/home/choza/projects/gort/gort.md` when the active work itself is on the Gort prompt-pack repository.
 - Treat the active repository's Beads state, worktree, and runtime files as authoritative for transient execution state.
-- On fresh-context bootstrap, the first grounding `read` should come from the active repository's authoritative `AGENTS.md` when the current Gort action is already anchored to that repo/worktree; `~/projects/AGENTS.md` is only the fallback when no more specific active-repo authority is available.
-
-- When this repo is referenced from another repository only as shared controller logic, that alone does **not** authorize reading or mutating `/home/choza/projects/gort/.beads`.
-- Gort repo Beads becomes authoritative only after the active work explicitly switches to `/home/choza/projects/gort` or the user explicitly requests cross-repo migration/cleanup into this tracker.
-
-## Editing Gort
-
-- When editing `gort.md`, `context-compaction.md`, or `states/*.md`, update `gort.citations.md` with supporting evidence.
-
-## Working style for Gort changes
-
-- Act as a prompt-systems research engineer: optimize controller behavior with small, surgical edits backed by explicit evidence.
-- Prefer the minimum change set that can plausibly fix the observed behavior while preserving existing invariants.
-- Define the user goal and pass/fail criteria before changing prompts or state-machine files.
-- Favor provable results over speculative elegance: validate with local evidence, diffs, and interactive Kitty/Pi smoke tests using the exact reinjection flow the user cares about.
-- Treat prompt rules as checkable specifications. Prefer trace assertions over subjective "felt better" judgments.
-- Use the scenario-based regression guidance in `EVALS.md` when evaluating Gort changes, and expand that scenario corpus when a new real failure mode is discovered.
-- For routing, terminal-state, resume, or bootstrap changes, include at least one adversarial or compatibility case in addition to the primary happy-path smoke.
-- When behavior and instructions diverge, align Gort with the user's operational goal rather than preserving a broken prior wording.
-- Treat prompt-pack edits as experiments: record what failed, what changed, and what evidence shows improvement in `gort.citations.md`.
-- When local repo evidence is not enough to justify a Gort behavior change, do targeted web research on the interaction pattern you are proposing and cite it in `gort.citations.md` rather than relying on taste alone.
-- If the user expresses a design preference or proposed fix, treat that as a hypothesis to test rather than a conclusion to adopt. Perform at least one explicit adversarial research pass that looks for reasons the preference may be suboptimal, over-broad, or unsafe.
-- After that adversarial pass, summarize any objective pushback calmly and succinctly before recommending a change. If the evidence supports a narrower or different rule than the user's preferred framing, prefer the evidence-backed correction and say so plainly.
-- Do not preserve the user's exact framing when a smaller, more objective correction is better supported. Prefer the best supported rule, then explain why it differs.
-- Avoid broad persona inflation or stylistic churn; improve reasoning quality through clearer rules, recovery paths, and verification gates.
-- Be especially conservative about terminal states, autonomous recovery, resume behavior, and anything that can cause Gort to stop instead of continuing.
-- Keep Gort prompt entrypoints stable and state-agnostic; transient execution state should be recovered from external runtime sources, not embedded in reinjected prompt text.
-- Treat this repository as a prompt-pack/documentation boundary: do not change Pi.dev source code, watchers, subagents, or extension/runtime implementation from here.
-- If a requested behavior would require Pi.dev or extension source changes, document the limitation and boundary in `AGENTS.md` or `README.md` and keep the fix inside Markdown prompt-pack/docs files only.
-- When external frameworks or benchmarks are helpful, use them as reference material; the authoritative evals for this repo are still the local Kitty/Pi scenario traces described in `EVALS.md`.
+- Reading this repo as shared controller logic does **not** authorize reading or mutating `/home/choza/projects/gort/.beads`.
+- If the work requires changing Pi.dev/runtime implementation rather than Markdown prompt-pack behavior, document that boundary and keep this repo's changes inside Markdown prompt-pack/docs files.
 
 <!-- BEGIN BEADS INTEGRATION -->
 ## Issue Tracking with bd (beads)
@@ -131,28 +112,6 @@ For more details, see README.md and docs/QUICKSTART.md.
 
 ## Landing the Plane (Session Completion)
 
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
-
-**MANDATORY WORKFLOW:**
-
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-   ```bash
-   git pull --rebase
-   bd dolt push
-   git push
-   git status  # MUST show "up to date with origin"
-   ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
+**When ending a work session**, complete the repo work, update/close the relevant `bd` issue, and sync Beads/Dolt as allowed by workspace policy.
 
 <!-- END BEADS INTEGRATION -->
