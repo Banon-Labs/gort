@@ -15,9 +15,8 @@ Terminal state. `NO_EPICS` means true completion/quiescence. `LOW_CONFIDENCE_NEX
 4. If `NIKTO_REASON` is `NO_EPICS`, emit one terse completion/quiescence summary only.
 5. If `NIKTO_REASON` is `LOW_CONFIDENCE_NEXT_EPIC`, emit a terse uncertainty summary naming the smallest remaining decision or evidence gap.
 6. If the visible stop summary mentions plausible meaningful follow-on work, unresolved next-step ambiguity, or a smallest remaining decision, the reason may not be `NO_EPICS`.
-7. Checkpoints, visibility bundles, and compaction/resume mechanics are not by themselves terminal reasons.
-8. Include the `NIKTO_REASON`.
-9. Stop.
+7. Include the `NIKTO_REASON`.
+8. Stop.
 
 ## NIKTO entry rule
 
@@ -65,7 +64,7 @@ If the user explicitly says you are already in low-confidence next-epic mode, or
 11. If durable-state verification is truly needed, keep it minimal and do not surface the verification chatter before the next structured turn unless the verification itself changes the question, research branch, or synthesis decision.
 12. If the user is unsure, recommend a simple default or present 2–3 bounded options instead of forcing open-ended brainstorming.
 13. If the missing uncertainty is factual or externally verifiable, switch to research instead of asking the user to guess.
-14. Do not use this protocol to ask for routine continuation approval, milestone review, or permission to keep iterating after a normal checkpoint/visibility emit. Ask only for true stakeholder-owned decisions or explicit approval gates.
+14. Apply continuation/pause behavior from the active mode file. Do not mix autonomy-mode and safe-mode checkpoint semantics in this file.
 15. Update the NIKTO header on every questionnaire turn with truthful adaptive-status fields:
    - `QMODE=CLARIFY` while asking a stakeholder question
    - `QMODE=RESEARCH` while gathering delegated factual evidence
@@ -110,5 +109,4 @@ Never enter `NIKTO` because:
 - a fresh session recovered only a blocked Beads frontier, but BERADA has not yet run the required blocker freshness / reduction pass for that frontier
 - enough information already exists to define one bounded next epic or ticket, but the clarification protocol has not yet transitioned back to `BERADA`
 - the remaining uncertainty is factual or researchable and has already been delegated to evidence, but the protocol has not yet converted it into research or child tasks
-- a visibility bundle, checkpoint, compaction boundary, or other resumability artifact was emitted without a real stakeholder decision or hard blocker
 - a command failed before classification and TRIAGE routing was attempted

@@ -6,6 +6,31 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-09 — isolate autonomy-mode and safe-mode semantics into separate files
+
+### Local evidence
+
+- After the autonomy-default wording landed, a fresh oni-tas Kitty/Pi smoke still ended on a non-terminal structured `STATE:` progress block that named a ready next task instead of continuing autonomously; artifact: [`/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt`](/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt).
+- That failure suggested not just missing wording, but instruction interference: autonomy-default and tighter approval/checkpoint semantics were both still present in the same always-loaded prompt surface.
+- Existing Gort citations already supported narrower scope and smaller high-signal context, but the prompt pack still kept mutually exclusive oversight semantics mixed together in `gort.md` and the state files.
+- Comparative `claw-code` inspection also pointed in the same direction: keep the universal harness contract thin and keep execution/approval behavior explicit rather than ambient.
+- Updated prompt/docs files: [`./gort.md`](./gort.md), [`./README.md`](./README.md), [`./oversight-modes.md`](./oversight-modes.md), [`./modes/autonomy.md`](./modes/autonomy.md), [`./modes/safe-mode.md`](./modes/safe-mode.md), [`./states/klaatu.md`](./states/klaatu.md), [`./states/berada.md`](./states/berada.md), and [`./states/nikto.md`](./states/nikto.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [LangChain — Context Engineering](https://blog.langchain.com/context-engineering-for-agents)
+- [LangGraph — Thinking in LangGraph](https://docs.langchain.com/oss/javascript/langgraph/thinking-in-langgraph)
+- [Context Engineering: A Practitioner Methodology for Structured Human-AI Collaboration (arXiv:2604.04258)](https://arxiv.org/abs/2604.04258)
+
+### Why these sources support the repair
+
+- Anthropic’s context-engineering guidance says good context engineering means finding the smallest possible set of high-signal tokens for the desired behavior, which supports removing mutually exclusive oversight rules from the always-loaded root prompt.
+- LangChain’s context-engineering guide explicitly recommends selecting and isolating context, and warns about context confusion/clash when too much or conflicting context is present. That maps directly to separating autonomy-mode and safe-mode semantics instead of mixing them.
+- LangGraph’s design guidance says to break workflows into discrete steps, decide what each step needs, and format prompts on demand. That supports loading exactly one active mode file rather than keeping all oversight variants ambient at once.
+- The practitioner methodology paper emphasizes assembling and sequencing structured context packages rather than treating one giant prompt as the unit of design, which supports a modular prompt-pack split.
+- Together with the local oni-tas smoke artifact, these sources justify a structural repair rather than endless wording tweaks: keep `gort.md` for universal invariants, isolate autonomy-mode behavior in `modes/autonomy.md`, isolate safe-mode behavior in `modes/safe-mode.md`, and load exactly one mode file per active run.
+
 ## 2026-04-09 — autonomy mode default, safe mode explicit, and checkpoints/visibility are non-halting by default
 
 ### Local evidence
@@ -34,6 +59,33 @@ Any edit to the Gort prompt pack should add or update supporting evidence here. 
 - The HOTL/HITL taxonomy paper provides a clean vocabulary for the desired split: default human-on-the-loop autonomy with optional tighter safe-mode / human-in-the-loop style gating when explicitly required.
 - `claw-code` is not vendor-authoritative for Claude behavior, but as a comparative clean-room implementation it reinforces the same design direction: autonomy-first operation, recovery without manual babysitting, explicit permission/policy gates, and direct continuation after compaction instead of conversational re-checkpointing.
 - Together with the local `oni-tas` trace, these sources justify a narrow Gort repair: define autonomy mode as the default, require safe mode to be explicit, state plainly that visibility bundles/checkpoints are non-halting by default, and forbid using `LOW_CONFIDENCE_NEXT_EPIC` or routine milestone outputs as a proxy for “should I keep going?”
+
+## 2026-04-09 — non-terminal `STATE:` progress summaries may not strand ready work
+
+### Local evidence
+
+- Fresh oni-tas Kitty/Pi smoke after the autonomy-default update reused the real `oni-tas` pane, started a fresh session with `/new`, injected `KLAATU BERADA NIKTO`, and then waited for the final settled model output; artifacts: [`/tmp/oni-tas-fresh-klaatu-20260409T145528/new-after.txt`](/tmp/oni-tas-fresh-klaatu-20260409T145528/new-after.txt) and [`/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt`](/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt).
+- The final settled screen showed a non-terminal structured block:
+  - `STATE: KLAATU | EPIC: oni-tas-xcn | LOOP: 0`
+  - `Next: execute oni-tas-7xq ...`
+  while the UI had already returned to waiting for user input.
+- That artifact proves the prior autonomy-default wording was not enough by itself: Gort still allowed a checkpoint-shaped `STATE:` update to end the turn even though executable next work already existed and no explicit approval gate or hard terminal boundary was active.
+- Updated prompt files: [`./gort.md`](./gort.md), [`./states/klaatu.md`](./states/klaatu.md), and [`./gort.citations.md`](./gort.citations.md)
+
+### Primary supporting sources
+
+- [Anthropic — Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy)
+- [OpenAI — A practical guide to building agents](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents)
+- [LangGraph — Pause using `interrupt`](https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/)
+- [ultraworkers/claw-code — `rust/crates/runtime/src/compact.rs`](https://github.com/ultraworkers/claw-code/blob/main/rust/crates/runtime/src/compact.rs)
+
+### Why these sources support the repair
+
+- Anthropic’s autonomy findings support letting coding agents continue longer by default and intervening selectively, which argues against ending the turn on a mere progress summary when a ready next task already exists.
+- OpenAI’s agent guidance frames handoff as a response to failure thresholds or high-risk boundaries, not routine milestone narration.
+- LangGraph’s interrupt model reinforces that explicit pause points should be deliberate external-input boundaries, not accidental consequences of emitting status text.
+- The `claw-code` compaction continuation text is a useful comparative implementation signal because it explicitly says to resume directly without asking further questions, which matches the narrower repair here: do not let resumability/progress text become a de facto stop.
+- Together with the oni-tas smoke artifact, these sources justify a targeted rule: a non-terminal `STATE:` progress block may not end the turn while executable next work already exists and no explicit approval gate, compaction handoff, or hard terminal reason is active.
 
 ## 2026-04-06 — keep inline artifact readback as operator habit, not durable Gort repo policy
 

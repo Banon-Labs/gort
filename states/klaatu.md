@@ -34,11 +34,9 @@ Goal: execute one ready task for the current epic per loop.
    /home/choza/projects/scripts/bd-visibility-bundle.sh --updated-id <id>
    ```
 
-   Treat the visibility bundle as an evidence/observability emit only. It does **not** pause the loop by itself.
-
 9. Apply the compaction handoff policy at the safe boundary using [../context-compaction.md](../context-compaction.md).
 10. Increment LOOP.
-11. Re-check ready tasks and repeat without waiting for routine user confirmation unless an explicit approval gate or hard terminal boundary is active.
+11. Re-check ready tasks and repeat, applying checkpoint/pause behavior from the active mode file.
 
 ### Git commit normalization
 
@@ -51,7 +49,7 @@ Treat `git commit` reporting "nothing to commit" as **Success** if:
 
 Evaluate after each cycle. Transition immediately on the first match:
 
-- ready tasks still exist for current epic → repeat `KLAATU` (do not stop just because a visibility bundle or checkpoint was emitted)
+- ready tasks still exist for current epic → repeat `KLAATU`
 - no ready task exists for current epic, but current epic is not complete → transition to `BERADA`, reset LOOP
 - current epic is complete → advance to next epic, reset LOOP, re-enter `KLAATU`
 - all remaining work in current epic is blocked by a confirmed external, permission-bound, human-decision, missing-approval, missing-credential, or unavailable-external-dependency blocker that cannot be reduced locally → transition to `NIKTO`

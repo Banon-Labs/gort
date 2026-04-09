@@ -9,12 +9,14 @@ Gort is a state-machine prompt pack for autonomous project execution.
 - `states/berada.md` — make the current epic execution-ready
 - `states/nikto.md` — terminal halt behavior and allowed entry reasons
 - `context-compaction.md` — kitty/Pi compaction and resume procedure
-- `oversight-modes.md` — durable autonomy-mode vs safe-mode semantics
+- `modes/autonomy.md` — default autonomy-mode pause/continuation semantics
+- `modes/safe-mode.md` — explicit safe-mode approval/checkpoint semantics
+- `oversight-modes.md` — short index explaining the mode split
 - `gort.citations.md` — evidence log for edits and design changes
 
 ## Usage
 
-Use the canonical cue `KLAATU BERADA NIKTO` to enter the controller from a consumer repo. Recognition is case-insensitive and may accept common alternate spellings for compatibility (for example `Klatu Berata Nicto`), but docs and examples should always use the canonical form. Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting.
+Use the canonical cue `KLAATU BERADA NIKTO` to enter the controller from a consumer repo. Recognition is case-insensitive and may accept common alternate spellings for compatibility (for example `Klatu Berata Nicto`), but docs and examples should always use the canonical form. Start with `gort.md`. When the current state is known, read the matching state file and `context-compaction.md` before acting. Load exactly one mode file for the active run: `modes/autonomy.md` by default, or `modes/safe-mode.md` only when the user or repo-local policy explicitly requests tighter approval/checkpoint behavior.
 
 ## Validation
 
