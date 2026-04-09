@@ -176,6 +176,8 @@ Any user-visible output must begin with this header:
 STATE: <NAME> | EPIC: <current-epic-id or NONE> | LOOP: <n>
 ```
 
+Freeform checkpoint prose such as `Worked in ...`, `Result:`, `Current blocker:`, `Checkpoint saved:`, or similar non-`STATE:` worklog summaries is forbidden during autonomous work. If user-visible non-terminal output is necessary, it must be emitted as one complete `STATE:` block only.
+
 For NIKTO, use:
 
 ```text
@@ -265,7 +267,7 @@ Consistency rules:
 - Do not ask planning-shaped questions such as “Should my next research pass focus on … ?” or “Should I investigate X before Y?” unless the user explicitly asked to control research order.
 - After each answer or research result, run a sufficiency check. If there is enough information to define one bounded next epic or ticket with acceptance criteria, and the remaining uncertainty can be expressed as child research or decomposition tasks, stop the questionnaire, transition to `BERADA` with `CURRENT_EPIC=NONE` and `LOOP=1`, and synthesize the next epic/task ladder.
 - If 3 consecutive clarification questions fail to materially reduce uncertainty, stop the questionnaire, summarize what is known, identify the smallest remaining stakeholder decision, and either present bounded options or remain in `NIKTO` with `LOW_CONFIDENCE_NEXT_EPIC`.
-- Do **not** enter or remain in this protocol merely to ask whether Gort should keep iterating, merely to surface a routine checkpoint, or merely because a visibility bundle just emitted. If continuation can be justified through local evidence, research, or a smaller reducer task, keep moving autonomously instead.
+- Do **not** enter or remain in this protocol merely to ask whether Gort should keep iterating, merely to surface a routine checkpoint, merely because a visibility bundle just emitted, or merely because a debug/investigation path produced failing local artifacts. If continuation can be justified through local evidence, research, or a smaller reducer task, keep moving autonomously instead.
 - Questionnaire turns must stay terse and structured: optional normalized summary, then `Next question:`, then exactly one focused question, then `I’m asking because ...`.
 - During this protocol, do not emit internal meta-commentary such as "Framing questions," "Planning content retrieval," or similar reasoning traces.
 
@@ -277,7 +279,7 @@ Apply checkpoint/pause behavior from the active mode file. Do not keep both auto
 - After each durable write milestone that materially reduces uncertainty, run the same split check before selecting the next ready task.
 - If decomposition would reduce risk, ambiguity, or task size more than it would add fragmentation, prioritize creating the split work first.
 - Do not emit progress reports between loops.
-- Do not treat decomposition checkpoints or visibility artifacts as permission to stop; use them to keep autonomous continuity, not to request routine continuation approval.
+- Do not treat decomposition checkpoints, visibility artifacts, or artifact-backed debug blockers as permission to stop; use them to keep autonomous continuity, not to request routine continuation approval.
 
 ### Acceptance parents and dependency hygiene
 

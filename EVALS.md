@@ -121,16 +121,19 @@ Keep using and expanding a small regression corpus built from real failures.
   - those roadmap children are attached with parent-child decomposition rather than invalid task→epic blocker links
   - no speculative distant branches are created merely because more work is imaginable
 
-### S10 — Non-terminal `STATE:` progress block must not strand ready work
+### S10 — Non-terminal progress output must not strand ready work
 
 - Repo: real consumer repo smoke such as `oni-tas`
 - Setup: fresh session, inject `KLAATU BERADA NIKTO`, then wait for the settled output
 - Assert:
   - the settled trace does **not** end on a non-terminal structured `STATE:` block whose body merely says `Next:` / `Next move:` while executable work is ready
+  - the settled trace does **not** return control on freeform checkpoint prose such as `Worked in ...`, `Result:`, `Current blocker:`, or `Checkpoint saved:`
   - if a ready next task exists and no explicit approval gate, compaction handoff, or hard terminal condition is active, the session keeps executing instead of returning control on checkpoint text alone
+  - if only a local debug blocker exists and concrete local artifacts are available for further reducer/research work, the session keeps investigating rather than pausing as if the blocker were terminal
   - if mode selection is ambiguous, the observed behavior still matches autonomy mode by default rather than accidental safe-mode pausing
 - Reference artifacts:
-  - failing trace: `/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt`
+  - failing `Next:` trace: `/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt`
+  - failing prose-checkpoint trace: `/tmp/oni-tas-panel-check-20260409T154901/current-panel.txt`
   - improved trace after mode split: `/tmp/oni-tas-mode-split-smoke-20260409T151057/prompt-after-longwait.txt`
 
 ## Public research to mirror locally

@@ -6,6 +6,28 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-09 — forbid freeform checkpoint prose and treat artifact-backed debug blockers as non-terminal by default
+
+### Local evidence
+
+- The live oni-tas panel later returned control on freeform prose instead of a structured state block; artifact: [`/tmp/oni-tas-panel-check-20260409T154901/current-panel.txt`](/tmp/oni-tas-panel-check-20260409T154901/current-panel.txt).
+- That capture showed visible text in this shape: `Worked in ...`, `Result:`, `Current blocker:`, `Checkpoint saved:`, followed by listed failing and prior-success artifacts. This violated Gort's structured-output contract and also looked non-terminal, because the blocker still had concrete local artifacts for continued reducer/research work.
+- Compared with the earlier `Next:` failure, this showed the remaining bug was broader than one phrasing pattern: autonomy could still stop on prose checkpoint narration even after the mode split.
+- Updated files: [`./gort.md`](./gort.md), [`./modes/autonomy.md`](./modes/autonomy.md), [`./EVALS.md`](./EVALS.md), and [`./gort.citations.md`](./gort.citations.md)
+
+### Primary supporting sources
+
+- [Anthropic — Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy)
+- [OpenAI — A practical guide to building agents](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents)
+- [LangGraph — Pause using `interrupt`](https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/)
+
+### Why these sources support the repair
+
+- Anthropic’s autonomy framing supports selective intervention rather than routine checkpoint-style pauses, which argues against returning control on a prose worklog when local investigation can still continue.
+- OpenAI’s agent guidance frames handoff around risk or explicit failure boundaries, not around narrated debug summaries that still expose concrete next investigative artifacts.
+- LangGraph’s interrupt model reinforces that pauses should be explicit boundaries, not accidental side effects of emitting status prose.
+- Together with the oni-tas panel artifact, these sources justify a narrow repair: forbid freeform non-`STATE:` checkpoint prose during autonomous work, and treat artifact-backed debug blockers as non-terminal unless an explicit approval gate, hard boundary, or true terminal reason is active.
+
 ## 2026-04-09 — stabilize the mode split with an ambiguity fallback and explicit regression coverage
 
 ### Local evidence

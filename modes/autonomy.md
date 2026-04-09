@@ -15,6 +15,7 @@ Use autonomy mode when the user or repo-local policy has **not** explicitly requ
 
 - A non-terminal structured `STATE:` update may not end the turn while executable next work already exists and no explicit approval gate, compaction handoff, or hard terminal condition is active.
 - If a block would merely say `Next:` / `Next move:` and executable work is ready, suppress that block and keep executing.
+- Freeform prose checkpoints such as `Worked in ...`, `Result:`, `Current blocker:`, or `Checkpoint saved:` are not valid autonomy-mode stop points. When local artifacts or failing validations still support continued reducer/research work, continue silently rather than returning control on prose checkpoint text.
 
 ## Visibility / checkpoint rule
 
