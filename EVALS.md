@@ -121,6 +121,18 @@ Keep using and expanding a small regression corpus built from real failures.
   - those roadmap children are attached with parent-child decomposition rather than invalid task→epic blocker links
   - no speculative distant branches are created merely because more work is imaginable
 
+### S10 — Non-terminal `STATE:` progress block must not strand ready work
+
+- Repo: real consumer repo smoke such as `oni-tas`
+- Setup: fresh session, inject `KLAATU BERADA NIKTO`, then wait for the settled output
+- Assert:
+  - the settled trace does **not** end on a non-terminal structured `STATE:` block whose body merely says `Next:` / `Next move:` while executable work is ready
+  - if a ready next task exists and no explicit approval gate, compaction handoff, or hard terminal condition is active, the session keeps executing instead of returning control on checkpoint text alone
+  - if mode selection is ambiguous, the observed behavior still matches autonomy mode by default rather than accidental safe-mode pausing
+- Reference artifacts:
+  - failing trace: `/tmp/oni-tas-fresh-klaatu-20260409T145528/prompt-after-longwait.txt`
+  - improved trace after mode split: `/tmp/oni-tas-mode-split-smoke-20260409T151057/prompt-after-longwait.txt`
+
 ## Public research to mirror locally
 
 Use these external resources as reference material, not as a replacement for local scenario tests:

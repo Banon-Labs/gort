@@ -6,6 +6,26 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-09 — stabilize the mode split with an ambiguity fallback and explicit regression coverage
+
+### Local evidence
+
+- The first post-split oni-tas smoke improved materially: instead of returning control on `STATE: KLAATU ... Next: ...`, the settled Kitty capture stayed in active work and showed live execution such as `edit src/windows_oni_probe.rs`; artifact: [`/tmp/oni-tas-mode-split-smoke-20260409T151057/prompt-after-longwait.txt`](/tmp/oni-tas-mode-split-smoke-20260409T151057/prompt-after-longwait.txt).
+- That better trace raised a narrower stabilization need: if future bootstrap/read paths ever leave mode selection ambiguous, Gort should still fall back to autonomy by default rather than drifting back toward accidental safe-mode pauses.
+- The repo also needed a durable regression entry for this exact failure so future edits can check the settled trace instead of re-arguing the design abstractly.
+- Updated files: [`./gort.md`](./gort.md), [`./EVALS.md`](./EVALS.md), and [`./gort.citations.md`](./gort.citations.md)
+
+### Primary supporting sources
+
+- [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- [LangChain — Context Engineering](https://blog.langchain.com/context-engineering-for-agents)
+
+### Why these sources support the repair
+
+- Anthropic’s context-engineering guidance favors the smallest high-signal context with clear defaults, which supports adding an explicit ambiguity fallback instead of leaving mode resolution implicit.
+- LangChain’s context-engineering guidance warns about conflicting context and supports designing selectors/defaults that keep the active context coherent. Here that means defaulting ambiguous cases back to autonomy mode and codifying the exact oni-tas regression as a scenario-level assertion.
+- Together with the improved oni-tas smoke artifact, these sources justify a small hardening pass rather than another large rewrite: preserve the mode split, make the default fallback explicit, and lock the failure into the eval corpus.
+
 ## 2026-04-09 — isolate autonomy-mode and safe-mode semantics into separate files
 
 ### Local evidence

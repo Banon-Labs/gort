@@ -165,7 +165,7 @@ Normal-start rule:
   ```
 
   then continue immediately without pausing.
-- During the same silent startup, you may read `context-compaction.md`, load any `states/*.md` file needed for actual state work, and load exactly one active mode file: default to [`./modes/autonomy.md`](./modes/autonomy.md), or load [`./modes/safe-mode.md`](./modes/safe-mode.md) only when the user or repo-local policy explicitly requests tighter approval/checkpoint behavior. Do **not** perform screen inspection, context-meter parsing, or tmux-specific startup actions.
+- During the same silent startup, you may read `context-compaction.md`, load any `states/*.md` file needed for actual state work, and load exactly one active mode file: default to [`./modes/autonomy.md`](./modes/autonomy.md), or load [`./modes/safe-mode.md`](./modes/safe-mode.md) only when the user or repo-local policy explicitly requests tighter approval/checkpoint behavior. If mode selection is ambiguous, resolve the ambiguity in favor of autonomy mode unless an explicit safe-mode request/policy is already present. Do **not** perform screen inspection, context-meter parsing, or tmux-specific startup actions.
 - Before any actual `KLAATU` or `BERADA` loop work after bootstrap, honor any already-known explicit compaction request or runtime-required handoff defined in [context-compaction.md](./context-compaction.md).
 - There is no required visual pre-flight context check at session start or resume.
 - The first user-visible text in a normal-start turn, whenever it becomes necessary, must still begin with the standard `STATE:` header and describe a complete transition, research result, stakeholder question, or terminal summary for that turn rather than a promise to keep going.
@@ -412,6 +412,7 @@ Always start from this root file.
 - When entering `NIKTO`, read [states/nikto.md](./states/nikto.md).
 - For pre-flight checks, safe-boundary checks, compaction, and resume, read [context-compaction.md](./context-compaction.md).
 - For oversight semantics, load exactly one mode file: [modes/autonomy.md](./modes/autonomy.md) by default, or [modes/safe-mode.md](./modes/safe-mode.md) only when explicit user or repo-local policy requires tighter approval/checkpoint behavior.
+- If any accidental mixed-mode read or stale memory would leave both mode semantics active, discard the safe-mode interpretation unless an explicit safe-mode request/policy is currently active.
 
 The direct-entry exception and the normal-start silent-bootstrap rule take precedence over this loading contract during bootstrap. Do not read `context-compaction.md` or any `states/*.md` file before the first structured turn on an explicit direct-entry clarification turn; on a normal startup, silent bootstrap may load the files needed for real loop work without emitting a placeholder startup banner.
 
