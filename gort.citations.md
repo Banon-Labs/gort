@@ -6,6 +6,35 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-09 — autonomy mode default, safe mode explicit, and checkpoints/visibility are non-halting by default
+
+### Local evidence
+
+- In the live `oni-tas` Pi session stored at `~/.pi/agent/sessions/--home-choza-projects-oni-tas--/2026-04-07T22-17-33-026Z_73dca1c3-9021-445e-8ab9-fba2a63be7dc.jsonl`, the user had to reinject `KLAATU BERADA NIKTO` multiple times to keep work moving even though the controller already claims it should continue until `NIKTO` or a hard boundary.
+- The same session includes multiple visible milestone/checkpoint-style assistant turns (for example the `Done.` / `Next move:` style updates around 2026-04-08 and the repeated `STATE: BERADA ... Next move:` turns near 2026-04-09) that behaved more like stop points than non-halting observability emits.
+- Existing Gort wording already said it should not stop to report progress, but it did not explicitly distinguish autonomy mode from safe mode or say plainly that visibility bundles / checkpoints / compaction are resumability and evidence mechanisms rather than implicit approval gates.
+- Comparative inspection of [`ultraworkers/claw-code`](https://github.com/ultraworkers/claw-code) showed several aligned implementation ideas worth adopting narrowly without treating them as vendor authority: autonomy-first philosophy (`PHILOSOPHY.md`), “no manual babysitting for routine recovery” / “capable of autonomous next-step execution” (`ROADMAP.md`), and compaction text that says to resume directly without asking more questions (`rust/crates/runtime/src/compact.rs`).
+- Updated prompt/docs files: [`./gort.md`](./gort.md), [`./states/klaatu.md`](./states/klaatu.md), [`./states/berada.md`](./states/berada.md), [`./states/nikto.md`](./states/nikto.md), [`./oversight-modes.md`](./oversight-modes.md), and [`./README.md`](./README.md)
+
+### Primary supporting sources
+
+- [Anthropic — Measuring AI agent autonomy in practice](https://www.anthropic.com/research/measuring-agent-autonomy)
+- [OpenAI — A practical guide to building agents](https://openai.com/business/guides-and-resources/a-practical-guide-to-building-ai-agents)
+- [LangGraph — Pause using `interrupt`](https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop/)
+- [Architecting Human-AI Cocreation for Technical Services — Interaction Modes and Contingency Factors (arXiv:2507.14034)](https://arxiv.org/abs/2507.14034)
+- [ultraworkers/claw-code — PHILOSOPHY.md](https://github.com/ultraworkers/claw-code/blob/main/PHILOSOPHY.md)
+- [ultraworkers/claw-code — ROADMAP.md](https://github.com/ultraworkers/claw-code/blob/main/ROADMAP.md)
+- [ultraworkers/claw-code — `rust/crates/runtime/src/compact.rs`](https://github.com/ultraworkers/claw-code/blob/main/rust/crates/runtime/src/compact.rs)
+
+### Why these sources support the repair
+
+- Anthropic’s autonomy study shows that experienced coding-agent users increasingly let agents run autonomously and intervene selectively, which supports making autonomy the default oversight posture rather than routine milestone gating.
+- OpenAI’s agent guide defines agents as systems that independently accomplish workflows on the user’s behalf and frames human intervention around failure thresholds and high-risk actions, which supports explicit approval boundaries instead of checkpoint-driven babysitting.
+- LangGraph’s interrupt/checkpoint model treats pauses as explicit external-input boundaries backed by persistent state, which supports treating compaction/checkpointing as resumability infrastructure rather than implicit stop signals.
+- The HOTL/HITL taxonomy paper provides a clean vocabulary for the desired split: default human-on-the-loop autonomy with optional tighter safe-mode / human-in-the-loop style gating when explicitly required.
+- `claw-code` is not vendor-authoritative for Claude behavior, but as a comparative clean-room implementation it reinforces the same design direction: autonomy-first operation, recovery without manual babysitting, explicit permission/policy gates, and direct continuation after compaction instead of conversational re-checkpointing.
+- Together with the local `oni-tas` trace, these sources justify a narrow Gort repair: define autonomy mode as the default, require safe mode to be explicit, state plainly that visibility bundles/checkpoints are non-halting by default, and forbid using `LOW_CONFIDENCE_NEXT_EPIC` or routine milestone outputs as a proxy for “should I keep going?”
+
 ## 2026-04-06 — keep inline artifact readback as operator habit, not durable Gort repo policy
 
 ### Local evidence

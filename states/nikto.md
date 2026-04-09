@@ -15,8 +15,9 @@ Terminal state. `NO_EPICS` means true completion/quiescence. `LOW_CONFIDENCE_NEX
 4. If `NIKTO_REASON` is `NO_EPICS`, emit one terse completion/quiescence summary only.
 5. If `NIKTO_REASON` is `LOW_CONFIDENCE_NEXT_EPIC`, emit a terse uncertainty summary naming the smallest remaining decision or evidence gap.
 6. If the visible stop summary mentions plausible meaningful follow-on work, unresolved next-step ambiguity, or a smallest remaining decision, the reason may not be `NO_EPICS`.
-7. Include the `NIKTO_REASON`.
-8. Stop.
+7. Checkpoints, visibility bundles, and compaction/resume mechanics are not by themselves terminal reasons.
+8. Include the `NIKTO_REASON`.
+9. Stop.
 
 ## NIKTO entry rule
 
@@ -64,7 +65,8 @@ If the user explicitly says you are already in low-confidence next-epic mode, or
 11. If durable-state verification is truly needed, keep it minimal and do not surface the verification chatter before the next structured turn unless the verification itself changes the question, research branch, or synthesis decision.
 12. If the user is unsure, recommend a simple default or present 2–3 bounded options instead of forcing open-ended brainstorming.
 13. If the missing uncertainty is factual or externally verifiable, switch to research instead of asking the user to guess.
-14. Update the NIKTO header on every questionnaire turn with truthful adaptive-status fields:
+14. Do not use this protocol to ask for routine continuation approval, milestone review, or permission to keep iterating after a normal checkpoint/visibility emit. Ask only for true stakeholder-owned decisions or explicit approval gates.
+15. Update the NIKTO header on every questionnaire turn with truthful adaptive-status fields:
    - `QMODE=CLARIFY` while asking a stakeholder question
    - `QMODE=RESEARCH` while gathering delegated factual evidence
    - `QMODE=SYNTHESIZE` once enough is known to define the next bounded epic or ticket
@@ -78,20 +80,20 @@ If the user explicitly says you are already in low-confidence next-epic mode, or
    - `QVALUE=NO_GO` forbids `NEXT=ASK`; the next move must be `RESEARCH`, `BERADA`, or `STOP`
    - if `NEXT=ASK`, the visible body must include a normalized summary, `Next question:`, exactly one focused stakeholder question, and `I’m asking because ...`
    - if `NEXT` is not `ASK`, do not emit `Next question:`
-15. Do not show a fake `% complete` for adaptive questioning when the remaining question count is not actually known.
-16. Do not ask planning-shaped questions such as “Should my next research pass focus on … ?” or “Should I investigate X before Y?” unless the user explicitly asked to control research order.
-17. After each answer or research result, run a sufficiency check:
+16. Do not show a fake `% complete` for adaptive questioning when the remaining question count is not actually known.
+17. Do not ask planning-shaped questions such as “Should my next research pass focus on … ?” or “Should I investigate X before Y?” unless the user explicitly asked to control research order.
+18. After each answer or research result, run a sufficiency check:
    - if enough information exists to define one bounded next epic or ticket with acceptance criteria, and the remaining uncertainty can be expressed as child research or decomposition tasks, stop questioning and transition to `BERADA`
    - otherwise continue only with the single highest-information unresolved stakeholder question
-18. If 3 consecutive clarification questions fail to materially reduce uncertainty, stop the questionnaire, summarize what is known, identify the smallest remaining stakeholder decision, and either present bounded options or remain terminal in `LOW_CONFIDENCE_NEXT_EPIC`.
-19. Questionnaire turns must stay terse and structured: optional normalized summary, then `Next question:`, then exactly one focused question, then `I’m asking because ...`.
-20. The first user-visible turn after any resume, new user answer, or research result must be one of these exact shapes only:
+19. If 3 consecutive clarification questions fail to materially reduce uncertainty, stop the questionnaire, summarize what is known, identify the smallest remaining stakeholder decision, and either present bounded options or remain terminal in `LOW_CONFIDENCE_NEXT_EPIC`.
+20. Questionnaire turns must stay terse and structured: optional normalized summary, then `Next question:`, then exactly one focused question, then `I’m asking because ...`.
+21. The first user-visible turn after any resume, new user answer, or research result must be one of these exact shapes only:
    - header + normalized summary + one stakeholder question
    - header + normalized summary + explicit switch to research because the remaining uncertainty is factual or delegated to evidence
    - header + normalized summary + explicit transition to `BERADA` because enough is known to synthesize
-21. Do not emit any other visible preamble before that first structured turn.
-22. If any setup narration or other noncompliant preamble would be emitted, suppress it internally and continue until a compliant first structured turn is ready. If any noncompliant preamble slips out anyway, treat it as a protocol failure and immediately replace it with the compliant structured turn rather than continuing the preamble.
-23. Do not emit internal meta-commentary such as “Framing questions,” “Planning content retrieval,” or similar reasoning traces.
+22. Do not emit any other visible preamble before that first structured turn.
+23. If any setup narration or other noncompliant preamble would be emitted, suppress it internally and continue until a compliant first structured turn is ready. If any noncompliant preamble slips out anyway, treat it as a protocol failure and immediately replace it with the compliant structured turn rather than continuing the preamble.
+24. Do not emit internal meta-commentary such as “Framing questions,” “Planning content retrieval,” or similar reasoning traces.
 
 ## Forbidden NIKTO triggers
 
@@ -108,4 +110,5 @@ Never enter `NIKTO` because:
 - a fresh session recovered only a blocked Beads frontier, but BERADA has not yet run the required blocker freshness / reduction pass for that frontier
 - enough information already exists to define one bounded next epic or ticket, but the clarification protocol has not yet transitioned back to `BERADA`
 - the remaining uncertainty is factual or researchable and has already been delegated to evidence, but the protocol has not yet converted it into research or child tasks
+- a visibility bundle, checkpoint, compaction boundary, or other resumability artifact was emitted without a real stakeholder decision or hard blocker
 - a command failed before classification and TRIAGE routing was attempted

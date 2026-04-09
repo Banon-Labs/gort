@@ -9,6 +9,7 @@ Gort is a state-machine prompt pack for autonomous project execution.
 - `states/berada.md` — make the current epic execution-ready
 - `states/nikto.md` — terminal halt behavior and allowed entry reasons
 - `context-compaction.md` — kitty/Pi compaction and resume procedure
+- `oversight-modes.md` — durable autonomy-mode vs safe-mode semantics
 - `gort.citations.md` — evidence log for edits and design changes
 
 ## Usage

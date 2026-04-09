@@ -53,6 +53,8 @@ Goal: make the current epic execution-ready, or seed the next logical epic when 
      - stakeholder decision → may require one focused user question
      - factual / ecosystem / implementation-order uncertainty → convert into research or decomposition work
    - if enough information already exists to define one bounded epic and the remaining uncertainty can be turned into child research or decomposition tasks, create that epic now instead of handing off to `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`
+   - do **not** hand off merely to ask whether Gort should keep iterating, merely to surface a routine milestone checkpoint, or merely because a visibility bundle just emitted
+   - prefer the smallest evidence-backed reducer task, research task, or decomposition that keeps autonomy moving before escalating to stakeholder questioning
    - do not hand off to `NO_EPICS` while that plausible follow-on branch still exists
    - only hand off to `LOW_CONFIDENCE_NEXT_EPIC` when a true stakeholder decision or evidence gap still blocks the next bounded epic
 7. If ready work is empty but open blocked work remains:
@@ -100,4 +102,4 @@ Evaluate after each cycle. Transition immediately on the first match:
 - current epic is fully complete → advance to next epic, reset LOOP
 - no further task creation or decomposition is possible because of a confirmed external blocker BERADA cannot reduce after the required blocked-frontier freshness / reduction pass → transition to `NIKTO`
 - no epics remain only after NO-EPICS RECOVERY and POST-COMPLETION CONTINUATION SCAN found no plausible unfinished meaningful work or credible follow-on epic, repo quiescence was confirmed, and no unresolved next-step ambiguity remains → transition to `NIKTO` with `NIKTO_REASON: NO_EPICS`
-- meaningful opportunities may remain, but no concrete next epic can be justified without subjective guidance or confidence beyond local evidence → transition to `NIKTO` with `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`, carrying the normalized summary and smallest unresolved decision into the clarification protocol
+- meaningful opportunities may remain, but no concrete next epic can be justified without subjective guidance or confidence beyond local evidence → transition to `NIKTO` with `NIKTO_REASON: LOW_CONFIDENCE_NEXT_EPIC`, carrying the normalized summary and smallest unresolved decision into the clarification protocol; do not use this branch for routine continuation approval or checkpoint review
