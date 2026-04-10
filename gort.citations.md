@@ -6,6 +6,26 @@ This page records supporting evidence for edits and substantial reasoning change
 
 Any edit to the Gort prompt pack should add or update supporting evidence here. Do not change Gort without citations and evidence that justify the change.
 
+## 2026-04-10 — require a continuity-diff pivot when richer sandbox repros still collapse to NIKTO
+
+### Local evidence
+
+- Exact failing real session with repeated visible reinjection-loop turns: [`~/.pi/agent/sessions/--home-choza-projects-oni-tas--/2026-04-10T00-03-14-034Z_832296d1-3d7d-4f18-b80a-7bd8369f67b8.jsonl`](~/.pi/agent/sessions/--home-choza-projects-oni-tas--/2026-04-10T00-03-14-034Z_832296d1-3d7d-4f18-b80a-7bd8369f67b8.jsonl).
+- That session showed repeated visible turns on the same hot branch: `STATE: KLAATU | EPIC: oni-tas-vpy | LOOP: 8`, then loops `9`, `10`, and `11`, with execution text staying on the same offline `GetMouseCell` / Mono invoke stabilization path.
+- The same real session then continued through a still-hot multi-file implementation chain involving [`src/windows_oni_probe.rs`](./src/windows_oni_probe.rs), [`src/bin/oni_tas_windows_oni_probe.rs`](./src/bin/oni_tas_windows_oni_probe.rs), [`scripts/run-vm-guest-oni-probe.sh`](./scripts/run-vm-guest-oni-probe.sh), [`scripts/windows-run-vm-guest-oni-probe.ps1`](./scripts/windows-run-vm-guest-oni-probe.ps1), and probe artifacts such as `/tmp/probe-safe-default.json`, including intermediate edit/tool failures that still left obvious local next steps.
+- The strongest sandbox counterexample stayed non-portable even after progressively richer local shaping; latest artifact: [`/tmp/oni-tas-gort-20260409T212243-fix/artifacts/reinject22-after.txt`](/tmp/oni-tas-gort-20260409T212243-fix/artifacts/reinject22-after.txt).
+- That sandbox run proved a multi-file local plumbing chain across `src/windows_oni_probe.rs`, `src/bin/oni_tas_windows_oni_probe.rs`, and `scripts/run-sandbox-live-probe.sh`, passed `cargo test` (23 tests), and still terminated visibly at `STATE: NIKTO ... EXTERNAL_BLOCKER` instead of reproducing repeated visible `STATE: KLAATU ... Executing now ...` turns.
+- Real non-regression consumer-repo smoke after the prompt change: [`/tmp/pi-kitty-smoke-oni-tas-20260410T081712/prompt-after.txt`](/tmp/pi-kitty-smoke-oni-tas-20260410T081712/prompt-after.txt) settled at `STATE: BERADA | EPIC: oni-tas-bk9 | LOOP: 1`, showing correct oni-tas grounding, structured output, and a non-terminal bounded next-work selection rather than an immediate bad terminal stop.
+- Supporting smoke metadata: [`/tmp/pi-kitty-smoke-oni-tas-20260410T081712/summary.txt`](/tmp/pi-kitty-smoke-oni-tas-20260410T081712/summary.txt).
+- Updated files: [`./docs/editing-gort-write.md`](./docs/editing-gort-write.md), [`./states/nikto.md`](./states/nikto.md), [`./states/klaatu.md`](./states/klaatu.md), [`./gort.citations.md`](./gort.citations.md)
+
+### Why this evidence supports the maintainer-guidance repair
+
+- The local evidence shows that broader `/tmp` topology alone is not a sufficient proxy for the real oni-tas continuation behavior: even multi-file local plumbing and passing tests were repeatedly exhausted into terminal `EXTERNAL_BLOCKER`.
+- By contrast, the real consumer session stayed alive because one in-progress branch remained hot across turns, with continuing local implementation/debugging opportunities and intermediate failures that did not cool the branch down.
+- That makes a continuity-diff pivot the justified next proof step once richer sandbox repros keep failing: future maintainers should stop widening the sandbox and instead capture what persisted across the real loop turns before changing Gort broadly.
+- The same evidence also justifies a narrow prompt-pack repair: `EXTERNAL_BLOCKER` should not fire while one still-hot in-progress branch still has obvious local implementation/debugging next steps on the same code path, even if some external dependency remains unresolved in the background.
+
 ## 2026-04-09 — forbid freeform checkpoint prose and treat artifact-backed debug blockers as non-terminal by default
 
 ### Local evidence

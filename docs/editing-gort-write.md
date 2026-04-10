@@ -27,9 +27,42 @@ Use this guidance when the active work itself is on `/home/choza/projects/gort` 
 - Do not ask preference-shaped questions when research, repo evidence, or runtime traces should determine the answer. Default to evidence-first recommendations.
 - Reserve user questions for true stakeholder-owned choices only: authorization boundaries, scope/intent, risk tolerance, or acceptance decisions that evidence cannot settle. When a question is required, say why it is required.
 
+## Pre-edit proof gate for Gort changes
+
+Before changing `gort.md`, `context-compaction.md`, `modes/*.md`, or `states/*.md`, build the smallest evidence chain that answers all of the following:
+
+1. **Which exact session failed?** Record the Pi session jsonl path first. Prefer locating the failure from a distinctive user-provided snippet rather than starting from Kitty chrome.
+2. **What instruction source did the failing session actually follow?** Prove whether it read the active repo `AGENTS.md`, live `gort.md`, a cached `.gort/prompt...` snapshot, mode files, or other runtime-state files. Do not assume a stale prompt replay or a live-Gort failure without trace evidence.
+3. **What part is portable vs repo-coupled?** Reproduce in a controlled `/tmp` sandbox repo before broad Gort edits when the observed behavior may be caused by a consumer repo's Beads tree, runtime files, or task topology.
+4. **Was the failure actually reproduced?** Attribution alone is not enough. Before editing Gort, prefer at least one fresh-session repro with explicit pass/fail criteria and saved artifacts.
+5. **What is the minimal justified fix surface?** Classify the issue before editing:
+   - stale prompt/runtime plumbing
+   - live Gort contract failure
+   - mixed-source failure
+   - consumer-repo-specific interaction
+
+Use this decision rule:
+
+- **Edit Gort** when a failing session is shown to follow live Gort instructions and the behavior is reproduced or otherwise clearly contradicts the live contract.
+- **Fix prompt/runtime plumbing first** when cached prompt snapshots, reinjection payloads, or runtime-state files explain the failure better than the live prompt pack.
+- **Use a richer sandbox before broad edits** when a minimal `/tmp` repro proves only a portable bootstrap leak but not the higher-level continuation failure you are trying to fix.
+- **Stop widening the sandbox and switch to real-session continuity diffing** when progressively richer `/tmp` repros still collapse to `NIKTO` while the real consumer session shows repeated visible `STATE: KLAATU ... Executing now ...` turns on one still-hot in-progress branch. In that case, treat long-lived issue-branch continuity, unresolved multi-file implementation work, and real runtime/tool failure carry-over as the leading hypothesis instead of inventing more synthetic local topology.
+
+### Recommended evidence bundle
+
+For every Gort behavior change, prefer collecting and citing:
+
+- exact failing session jsonl path
+- exact repro session jsonl path
+- sandbox root (for example `/tmp/<name>-fix`)
+- relevant Kitty ANSI captures before/after injection
+- the exact trigger text used
+- a short note of what reproduced and what did not
+- if the exact visible loop did **not** reproduce, a short continuity diff note stating what persisted in the real session across loop turns (for example the same in-progress issue, the same hot code path, repeated edits across the same files, or intermediate tool/edit failures that kept the branch locally executable)
+
 ## Required maintenance steps
 
-- When editing `gort.md`, `context-compaction.md`, or `states/*.md`, update [`../gort.citations.md`](../gort.citations.md) with supporting evidence.
+- When editing `gort.md`, `context-compaction.md`, `modes/*.md`, or `states/*.md`, update [`../gort.citations.md`](../gort.citations.md) with supporting evidence.
 - Run the duplicate-line guard after Markdown-heavy edits:
 
 ```bash

@@ -28,7 +28,7 @@ Enter `NIKTO` only when one of these is true:
 | 2 | Permanent error | `PERMANENT_ERROR: <detail>` |
 | 3 | `bd` unavailable after 8 classified transient retries | `BD_UNAVAILABLE` |
 | 4 | LOOP exceeded 10 in one state without progress | `LOOP_EXCEEDED: <state>` |
-| 5 | All remaining work blocked by a confirmed external blocker that BERADA cannot reduce after the required blocked-frontier freshness / reduction pass | `EXTERNAL_BLOCKER: <detail>` |
+| 5 | All remaining work blocked by a confirmed external blocker that BERADA cannot reduce after the required blocked-frontier freshness / reduction pass, **and** no still-hot local implementation/debugging branch remains active for the same in-progress work | `EXTERNAL_BLOCKER: <detail>` |
 | 6 | Meaningful follow-on work may exist, but no concrete next epic can be justified without subjective guidance or higher-confidence evidence | `LOW_CONFIDENCE_NEXT_EPIC` |
 
 ## Terminal reason exclusivity
@@ -110,3 +110,4 @@ Never enter `NIKTO` because:
 - enough information already exists to define one bounded next epic or ticket, but the clarification protocol has not yet transitioned back to `BERADA`
 - the remaining uncertainty is factual or researchable and has already been delegated to evidence, but the protocol has not yet converted it into research or child tasks
 - a command failed before classification and TRIAGE routing was attempted
+- the same in-progress work still has a hot local implementation/debugging branch with obvious next local steps, such as repeated edits across the same files, modified local plumbing not yet cooled into quiescence, or intermediate tool/edit failures that still leave the branch locally executable

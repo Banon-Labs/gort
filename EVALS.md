@@ -136,6 +136,20 @@ Keep using and expanding a small regression corpus built from real failures.
   - failing prose-checkpoint trace: `/tmp/oni-tas-panel-check-20260409T154901/current-panel.txt`
   - improved trace after mode split: `/tmp/oni-tas-mode-split-smoke-20260409T151057/prompt-after-longwait.txt`
 
+### S11 — Rich sandbox still diverges from real hot-branch continuity
+
+- Repo pair:
+  - real consumer repo session with the exact visible loop symptom
+  - controlled `/tmp` sandbox repro that has already been enriched with local code/tests/tasks
+- Assert:
+  - do **not** broaden Gort edits merely because a sandbox reproduces a lower-layer bootstrap leak
+  - if the real session shows repeated visible `STATE: KLAATU ... Executing now ...` turns on one still-hot in-progress branch while the richer sandbox keeps collapsing to `STATE: NIKTO ... EXTERNAL_BLOCKER`, pause sandbox widening and perform a continuity diff instead
+  - continuity diff should record what persisted across the real loop turns: same issue/epic, same hot code path, repeated edits across the same files, and intermediate tool/edit failures that still left obvious local next steps
+  - treat that continuity diff as the required proof artifact before proposing broad prompt-pack changes for the higher-level continuation behavior
+- Reference artifacts:
+  - real session: `~/.pi/agent/sessions/--home-choza-projects-oni-tas--/2026-04-10T00-03-14-034Z_832296d1-3d7d-4f18-b80a-7bd8369f67b8.jsonl`
+  - strongest sandbox counterexample: `/tmp/oni-tas-gort-20260409T212243-fix/artifacts/reinject22-after.txt`
+
 ## Public research to mirror locally
 
 Use these external resources as reference material, not as a replacement for local scenario tests:

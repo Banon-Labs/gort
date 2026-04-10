@@ -52,6 +52,6 @@ Evaluate after each cycle. Transition immediately on the first match:
 - ready tasks still exist for current epic → repeat `KLAATU`
 - no ready task exists for current epic, but current epic is not complete → transition to `BERADA`, reset LOOP
 - current epic is complete → advance to next epic, reset LOOP, re-enter `KLAATU`
-- all remaining work in current epic is blocked by a confirmed external, permission-bound, human-decision, missing-approval, missing-credential, or unavailable-external-dependency blocker that cannot be reduced locally → transition to `NIKTO`
+- all remaining work in current epic is blocked by a confirmed external, permission-bound, human-decision, missing-approval, missing-credential, or unavailable-external-dependency blocker that cannot be reduced locally, and no still-hot local implementation/debugging branch remains active for the same in-progress work → transition to `NIKTO`
 - all remaining work is blocked but the blocker may be reduced by decomposition, research, dependency repair, or another local corrective action → transition to `BERADA`, reset LOOP
 - no epics remain → transition to `NIKTO`
